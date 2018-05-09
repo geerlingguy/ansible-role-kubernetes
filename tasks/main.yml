@@ -34,4 +34,5 @@
   debug: var=kubeadmin_init.stdout
 
 # TODO: Set up Flannel.
+
 # TODO: Allow pods on master with `kubectl taint nodes --all node-role.kubernetes.io/master-`

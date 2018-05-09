@@ -30,7 +30,7 @@ TODO.
 
 TODO.
 
-    kubernetes_enable_web_ui: True
+    kubernetes_enable_web_ui: False
 
 TODO.
 

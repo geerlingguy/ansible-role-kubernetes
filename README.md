@@ -22,6 +22,18 @@ Available variables are listed below, along with default values (see `defaults/m
 
 TODO.
 
+    kubernetes_allow_swap: False
+
+TODO.
+
+    kubernetes_allow_pods_on_master: True
+
+TODO.
+
+    kubernetes_enable_web_ui: True
+
+TODO.
+
     kubernetes_apt_release_channel: main
     kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-{{ ansible_distribution_release }} {{ kubernetes_apt_release_channel }}"
     kubernetes_apt_ignore_key_error: False

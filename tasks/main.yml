@@ -15,11 +15,25 @@
   notify: restart kubelet
   with_items: "{{ kubernetes_packages }}"
 
+- name: Allow kubelet to run with swap enabled (if configured).
+  lineinfile:
+    path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+    line: 'Environment="KUBELET_EXTRA_ARGS=--fail-swap-on=false"'
+    regexp: 'Environment="KUBELET_EXTRA_ARGS=--fail-swap-on.+'
+    insertafter: '^Environment='
+    state: present
+  when: kubernetes_allow_swap
+
 - name: Ensure kubelet is started and enabled at boot.
   service:
     name: kubelet
     state: started
     enabled: yes
+
+- name: Check if Kubernetes has already been initialized.
+  stat:
+    path: /etc/kubernetes/admin.conf
+  register: kubernetes_init_stat
 
 - name: Initialize the Kubernetes master with kubeadm init.
   command: >
@@ -30,10 +44,37 @@
     --ignore-preflight-errors=all
   register: kubeadmin_init
   failed_when: False
+  when: kubernetes_init_stat.stat.exists == False
 
 - name: Print the init output to screen.
   debug: var=kubeadmin_init.stdout
+  when: kubernetes_init_stat.stat.exists == False
 
-# TODO: Set up Flannel.
+- name: Ensure .kube directory exists.
+  file:
+    path: ~/.kube
+    state: directory
 
-# TODO: Allow pods on master with `kubectl taint nodes --all node-role.kubernetes.io/master-`
+- name: Symlink the kubectl admin.conf to ~/.kube/conf.
+  file:
+    src: /etc/kubernetes/admin.conf
+    dest: ~/.kube/config
+    state: link
+
+- name: Configure Flannel networking.
+  command: "{{ item }}"
+  with_items:
+    - kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+    - kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
+
+# TODO: Check if taint exists with something like `kubectl describe nodes`
+# instead of using kubernetes_init_stat.stat.exists check.
+- name: Allow pods on master node (if configured).
+  command: "kubectl taint nodes --all node-role.kubernetes.io/master-"
+  when:
+    - kubernetes_allow_pods_on_master
+    - kubernetes_init_stat.stat.exists == False
+
+- name: Enable the Kubernetes Web Dashboard UI (if configured).
+  command: "kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml"
+  when: kubernetes_enable_web_ui

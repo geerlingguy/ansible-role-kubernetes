@@ -1,6 +1,9 @@
 ---
 - hosts: all
 
+  vars:
+    kubernetes_allow_swap: True
+
   pre_tasks:
     - name: Update apt cache.
       apt: update_cache=yes cache_valid_time=600

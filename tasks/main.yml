@@ -67,7 +67,9 @@
     - kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
     - kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
   register: flannel_networking_result
-  changed_when: "'unchanged' not in flannel_networking_result.stdout"
+  changed_when: >
+    ('unchanged' not in flannel_networking_result.stdout)
+    or ('configured' not in flannel_networking_result.stdout)
 
 # TODO: Check if taint exists with something like `kubectl describe nodes`
 # instead of using kubernetes_init_stat.stat.exists check.

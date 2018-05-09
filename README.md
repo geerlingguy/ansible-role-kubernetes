@@ -40,6 +40,10 @@ TODO.
 
 TODO.
 
+    kubernetes_yum_arch: x86_64
+
+TODO.
+
 ## Dependencies
 
 None.

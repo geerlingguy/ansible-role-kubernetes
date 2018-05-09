@@ -20,4 +20,3 @@ kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-xenial {{ k
 kubernetes_apt_ignore_key_error: False
 
 kubernetes_yum_arch: x86_64
-kubernetes_yum_repo_url: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-{{ kubernetes_yum_arch }}"

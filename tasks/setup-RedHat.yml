@@ -1,13 +1,26 @@
 ---
-- name: Add Kubernetes GPG key.
-  rpm_key:
-    key: https://packages.cloud.google.com/yum/doc/yum-key.gpg
-    state: present
+- name: Ensure Kubernetes repository exists.
+  yum_repository:
+    name: kubernetes
+    description: Kubernetes
+    enabled: yes
+    gpgcheck: yes
+    repo_gpgcheck: yes
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-{{ kubernetes_yum_arch }}
+    gpgkey:
+      - https://packages.cloud.google.com/yum/doc/yum-key.gpg
+      - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 
-- name: Add Kubernetes repository.
-  get_url:
-    url: "{{ kubernetes_yum_repo_url }}"
-    dest: '/etc/yum.repos.d/kubernetes.repo'
-    owner: root
-    group: root
-    mode: 0644
+- name: Add Kubernetes GPG keys.
+  rpm_key:
+    key: "{{ item }}"
+    state: present
+  register: kubernetes_rpm_key
+  with_items:
+    - https://packages.cloud.google.com/yum/doc/yum-key.gpg
+    - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+
+- name: Make cache if Kubernetes GPG key changed.
+  command: "yum -q makecache -y --disablerepo='*' --enablerepo='kubernetes'"
+  when: kubernetes_rpm_key is changed
+  warn: no

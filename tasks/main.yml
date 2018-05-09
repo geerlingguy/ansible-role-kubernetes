@@ -29,6 +29,7 @@
     --kubernetes-version stable-1.10
     --ignore-preflight-errors=all
   register: kubeadmin_init
+  failed_when: False
 
 - name: Print the init output to screen.
   debug: var=kubeadmin_init.stdout

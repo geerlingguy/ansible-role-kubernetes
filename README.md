@@ -35,7 +35,7 @@ TODO.
 TODO.
 
     kubernetes_apt_release_channel: main
-    kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-{{ ansible_distribution_release }} {{ kubernetes_apt_release_channel }}"
+    kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-xenial {{ kubernetes_apt_release_channel }}"
     kubernetes_apt_ignore_key_error: False
 
 TODO.

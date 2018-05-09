@@ -1,0 +1,17 @@
+---
+kubernetes_packages:
+  - name: kubelet
+    state: present
+  - name: kubeadm
+    state: present
+  - name: kubectl
+    state: present
+  - name: kubernetes-cni
+    state: present
+
+kubernetes_apt_release_channel: main
+kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-{{ ansible_distribution_release }} {{ kubernetes_apt_release_channel }}"
+kubernetes_apt_ignore_key_error: False
+
+kubernetes_yum_arch: x86_64
+kubernetes_yum_repo_url: "https://packages.cloud.google.com/yum/repos/kubernetes-el{{ ansible_distribution_major_version }}-{{ kubernetes_yum_arch }}"

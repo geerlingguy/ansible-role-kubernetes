@@ -1,0 +1,13 @@
+---
+- name: Add Kubernetes GPG key.
+  rpm_key:
+    key: https://packages.cloud.google.com/yum/doc/yum-key.gpg
+    state: present
+
+- name: Add Kubernetes repository.
+  get_url:
+    url: "{{ kubernetes_yum_repo_url }}"
+    dest: '/etc/yum.repos.d/kubernetes.repo'
+    owner: root
+    group: root
+    mode: 0644

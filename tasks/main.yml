@@ -1,0 +1,37 @@
+---
+- include_tasks: setup-RedHat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include_tasks: setup-Debian.yml
+  when: ansible_os_family == 'Debian'
+
+- name: Ensure depdencies are installed.
+  package: name=curl state=present
+
+- name: Install Kubernetes packages.
+  package:
+    name: "{{ item.name | default(item) }}"
+    state: "{{ item.state | default('present') }}"
+  notify: restart kubelet
+  with_items: "{{ kubernetes_packages }}"
+
+- name: Ensure kubelet is started and enabled at boot.
+  service:
+    name: kubelet
+    state: started
+    enabled: yes
+
+- name: Initialize the Kubernetes master with kubeadm init.
+  command: >
+    kubeadm init
+    --pod-network-cidr=10.0.1.0/16
+    --apiserver-advertise-address={{ ansible_default_ipv4.address }}
+    --kubernetes-version stable-1.10
+    --ignore-preflight-errors=all
+  register: kubeadmin_init
+
+- name: Print the init output to screen.
+  debug: var=kubeadmin_init.stdout
+
+# TODO: Set up Flannel.
+# TODO: Allow pods on master with `kubectl taint nodes --all node-role.kubernetes.io/master-`

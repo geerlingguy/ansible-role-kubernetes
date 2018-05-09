@@ -2,7 +2,8 @@
 - hosts: all
 
   vars:
-    kubernetes_allow_swap: True
+    # Allow swap in test environments (hard to control in some Docker envs).
+    kubernetes_kubelet_extra_args: "--fail-swap-on=false"
 
   pre_tasks:
     - name: Update apt cache.
@@ -13,6 +14,11 @@
       package: name=iproute state=present
 
     - action: setup
+
+    - name: Use cgroupfs cgroup driver instead of systemd (Red Hat).
+      set_fact:
+        kubernetes_kubelet_extra_args: "--fail-swap-on=false --cgroup-driver=cgroupfs"
+      when: ansible_os_family == 'RedHat'
 
   roles:
     - geerlingguy.docker

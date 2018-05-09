@@ -23,4 +23,5 @@
 - name: Make cache if Kubernetes GPG key changed.
   command: "yum -q makecache -y --disablerepo='*' --enablerepo='kubernetes'"
   when: kubernetes_rpm_key is changed
-  warn: no
+  args:
+    warn: no

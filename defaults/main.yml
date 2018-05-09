@@ -9,7 +9,7 @@ kubernetes_packages:
   - name: kubernetes-cni
     state: present
 
-kubernetes_allow_swap: False
+kubernetes_kubelet_extra_args: ""
 
 kubernetes_allow_pods_on_master: True
 kubernetes_enable_web_ui: True

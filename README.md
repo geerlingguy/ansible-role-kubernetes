@@ -22,9 +22,9 @@ Available variables are listed below, along with default values (see `defaults/m
 
 TODO.
 
-    kubernetes_allow_swap: False
+    kubernetes_kubelet_extra_args: ""
 
-TODO.
+TODO. Example: `"--fail-swap-on=false --cgroup-driver=systemd"`.
 
     kubernetes_allow_pods_on_master: True
 

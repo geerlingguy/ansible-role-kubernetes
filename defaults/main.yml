@@ -13,6 +13,7 @@ kubernetes_kubelet_extra_args: ""
 
 kubernetes_allow_pods_on_master: True
 kubernetes_enable_web_ui: True
+
 kubernetes_pod_network_cidr: '10.0.1.0/16'
 kubernetes_version: 'stable-1.10'
 kubernetes_ignore_preflight_errors: 'all'

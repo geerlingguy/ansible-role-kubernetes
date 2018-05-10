@@ -20,29 +20,35 @@ Available variables are listed below, along with default values (see `defaults/m
       - name: kubernetes-cni
         state: present
 
-TODO.
+Kubernetes packages to be installed on the server. You can either provide a list of package names, or set `name` and `state` to have more control over whether the package is `present`, `absent`, `latest`, etc.
 
     kubernetes_kubelet_extra_args: ""
 
-TODO. Example: `"--fail-swap-on=false --cgroup-driver=systemd"`.
+Extra args to pass to `kubelet` during startup. E.g. to allow `kubelet` to start up even if there is swap is enabled on your server, set this to: `"--fail-swap-on=false"`.
 
     kubernetes_allow_pods_on_master: True
 
-TODO.
+Whether to remove the taint that denies pods from being deployed to the Kubernetes master. If you have a single-node cluster, this should definitely be `True`. Otherwise, set to `False` if you want a dedicated Kubernetes master which doesn't run any other pods.
 
     kubernetes_enable_web_ui: False
 
-TODO.
+Whether to enable the Kubernetes web dashboard UI (only accessible on the master itself, or proxied).
+
+    kubernetes_pod_network_cidr: '10.0.1.0/16'
+    kubernetes_version: 'stable-1.10'
+    kubernetes_ignore_preflight_errors: 'all'
+
+Options passed to `kubeadm init` when initializing the Kubernetes master.
 
     kubernetes_apt_release_channel: main
     kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-xenial {{ kubernetes_apt_release_channel }}"
     kubernetes_apt_ignore_key_error: False
 
-TODO.
+Apt repository options for Kubernetes installation.
 
     kubernetes_yum_arch: x86_64
 
-TODO.
+Yum repository options for Kubernetes installation.
 
 ## Dependencies
 
@@ -50,8 +56,14 @@ None.
 
 ## Example Playbook
 
+For a single node (master) Kubernetes cluster:
+
 ```yaml
 - hosts: all
+
+  vars:
+    kubernetes_allow_pods_on_master: True
+
   roles:
     - geerlingguy.docker
     - geerlingguy.kubernetes

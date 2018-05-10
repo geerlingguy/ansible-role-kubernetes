@@ -38,10 +38,10 @@
 - name: Initialize the Kubernetes master with kubeadm init.
   command: >
     kubeadm init
-    --pod-network-cidr=10.0.1.0/16
+    --pod-network-cidr={{ kubernetes_pod_network_cidr }}
     --apiserver-advertise-address={{ ansible_default_ipv4.address }}
-    --kubernetes-version stable-1.10
-    --ignore-preflight-errors=all
+    --kubernetes-version {{ kubernetes_version }}
+    --ignore-preflight-errors={{ kubernetes_ignore_preflight_errors }}
   register: kubeadmin_init
   failed_when: False
   when: kubernetes_init_stat.stat.exists == False

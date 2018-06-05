@@ -30,8 +30,8 @@
 - name: Configure Flannel networking.
   command: "{{ item }}"
   with_items:
-    - kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
-    - kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+    - kubectl apply -f {{ kubernetes_flannel_manifest_file_rbac }}
+    - kubectl apply -f {{ kubernetes_flannel_manifest_file }}
   register: flannel_result
   changed_when: "'created' in flannel_result.stdout"
 

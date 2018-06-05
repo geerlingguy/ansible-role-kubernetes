@@ -59,6 +59,11 @@ Apt repository options for Kubernetes installation.
 
 Yum repository options for Kubernetes installation.
 
+    kubernetes_flannel_manifest_file_rbac: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
+    kubernetes_flannel_manifest_file: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+Flannel manifest files to apply to the Kubernetes cluster to enable networking. You can copy your own files to your server and apply them instead, if you need to customize the Flannel networking configuration.
+
 ## Dependencies
 
 None.

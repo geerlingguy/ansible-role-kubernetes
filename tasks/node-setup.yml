@@ -1,8 +1,4 @@
 ---
-- name: print join command
-  debug:
-    msg: "{{ kubernetes_join_command }}"
-
 - name: Join node to Kubernetes master
   shell: >
     {{ kubernetes_join_command.stdout }}

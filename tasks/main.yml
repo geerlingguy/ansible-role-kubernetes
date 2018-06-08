@@ -35,12 +35,6 @@
     path: /etc/kubernetes/admin.conf
   register: kubernetes_init_stat
 
-- name: configure docker cgroup driver
-  shell:  sed -i "s/cgroup-driver=systemd/cgroup-driver=cgroupfs/g" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-
-- name: restart docker services
-  shell: systemctl daemon-reload && service kubelet restart
-
 # Set up master.
 - include_tasks: master-setup.yml
   when: kubernetes_role == 'master'

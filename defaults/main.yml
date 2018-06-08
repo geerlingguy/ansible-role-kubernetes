@@ -17,8 +17,8 @@ kubernetes_allow_pods_on_master: True
 kubernetes_enable_web_ui: True
 kuberenetes_debug: False
 
-kubernetes_pod_network_cidr: '10.0.1.0/16'
-kubernetes_apiserver_advertise_address: ''
+kubernetes_pod_network_cidr: '10.244.0.0/16'
+kubernetes_apiserver_advertise_address: '0.0.0.0'
 kubernetes_version: 'stable-1.10'
 kubernetes_ignore_preflight_errors: 'all'
 

@@ -44,7 +44,7 @@
     - kubernetes_init_stat.stat.exists == False
 
 - name: Check if Kubernetes Dashboard UI service already exists.
-  shell: kubectl get services --namespace kube-system | grep -q kubernetes-dashboard
+  shell: kubectl get pods -n kube-system | grep kubernetes-dashboard
   changed_when: False
   failed_when: False
   register: kubernetes_dashboard_service
@@ -54,4 +54,11 @@
   command: "kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml"
   when:
     - kubernetes_enable_web_ui
-    - kubernetes_dashboard_service is failed
+    - kubernetes_dashboard_service.stdout.find("kubernetes-dashboard") == -1
+
+- name: Wait for cluster to be ready
+  shell: kubectl get nodes
+  register: cluster
+  until: cluster.stdout.find(" Ready") != -1
+  retries: 30
+  delay: 10

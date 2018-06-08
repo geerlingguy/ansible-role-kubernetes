@@ -42,6 +42,12 @@
     path: /etc/kubernetes/admin.conf
   register: kubernetes_init_stat
 
+- name: configure docker cgroup driver
+  shell:  sed -i "s/cgroup-driver=systemd/cgroup-driver=cgroupfs/g" /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+
+- name: restart docker services
+  shell: systemctl daemon-reload && service kubelet restart
+
 # Set up master.
 - include_tasks: master-setup.yml
   when: kubernetes_role == 'master'
@@ -50,8 +56,8 @@
 - name: Get the kubeadm join command from the Kubernetes master.
   shell: kubeadm token create --print-join-command
   changed_when: False
-  when: kubernetes_role == 'master'
-  run_once: True
+  run_once: true
+  delegate_to: "{{ groups['master'][0] }}"
   register: kubernetes_join_command
 
 - include_tasks: node-setup.yml

@@ -50,8 +50,8 @@
 - name: Get the kubeadm join command from the Kubernetes master.
   shell: kubeadm token create --print-join-command
   changed_when: False
-  when: kubernetes_role == 'master'
-  run_once: True
+  run_once: true
+  delegate_to: "{{ groups['master'][0] }}"
   register: kubernetes_join_command
 
 - include_tasks: node-setup.yml

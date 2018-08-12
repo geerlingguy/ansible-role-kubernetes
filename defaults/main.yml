@@ -19,7 +19,7 @@ kuberenetes_debug: False
 
 kubernetes_pod_network_cidr: '10.0.1.0/16'
 kubernetes_apiserver_advertise_address: ''
-kubernetes_version: 'stable-1.10'
+kubernetes_version: 'stable-1.11'
 kubernetes_ignore_preflight_errors: 'all'
 
 kubernetes_apt_release_channel: main

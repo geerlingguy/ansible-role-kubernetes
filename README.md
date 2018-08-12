@@ -44,7 +44,7 @@ Whether to show extra debug info in Ansible's logs (e.g. the output of the `kube
 
     kubernetes_pod_network_cidr: '10.0.1.0/16'
     kubernetes_apiserver_advertise_address: ''
-    kubernetes_version: 'stable-1.10'
+    kubernetes_version: 'stable-1.11'
     kubernetes_ignore_preflight_errors: 'all'
 
 Options passed to `kubeadm init` when initializing the Kubernetes master. The `apiserver_advertise_address` defaults to `ansible_default_ipv4.address` if it's left empty.

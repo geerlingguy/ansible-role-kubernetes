@@ -51,8 +51,15 @@
   shell: kubeadm token create --print-join-command
   changed_when: False
   when: kubernetes_role == 'master'
-  run_once: True
-  register: kubernetes_join_command
+  register: kubernetes_join_command_result
+
+- name: Set the kubeadm join command globally.
+  set_fact:
+    kubernetes_join_command: "{{ kubernetes_join_command_result.stdout }}"
+  when: kubernetes_join_command_result.stdout is defined
+  delegate_to: "{{ item }}"
+  delegate_facts: True
+  with_items: "{{ groups['all'] }}"
 
 - include_tasks: node-setup.yml
   when: kubernetes_role == 'node'

@@ -27,8 +27,9 @@ Kubernetes packages to be installed on the server. You can either provide a list
 Whether the particular server will serve as a Kubernetes `master` (default) or `node`. The master will have `kubeadm init` run on it to intialize the entire K8s control plane, while `node`s will have `kubeadm join` run on them to join them to the `master`.
 
     kubernetes_kubelet_extra_args: ""
+    kubernetes_kubelet_extra_args_config_file: /etc/default/kubelet
 
-Extra args to pass to `kubelet` during startup. E.g. to allow `kubelet` to start up even if there is swap is enabled on your server, set this to: `"--fail-swap-on=false"`.
+Extra args to pass to `kubelet` during startup. E.g. to allow `kubelet` to start up even if there is swap is enabled on your server, set this to: `"--fail-swap-on=false"`. Or to specify the node-ip advertised by `kubelet`, set this to `"--node-ip={{ ansible_host }}"`.
 
     kubernetes_allow_pods_on_master: True
 

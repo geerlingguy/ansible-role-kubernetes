@@ -11,6 +11,7 @@ kubernetes_packages:
 
 kubernetes_role: master
 
+kubernetes_kubelet_extra_args_config_file: /etc/default/kubelet
 kubernetes_kubelet_extra_args: ""
 
 kubernetes_allow_pods_on_master: True

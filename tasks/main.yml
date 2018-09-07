@@ -17,10 +17,9 @@
 
 - name: Configure KUBELET_EXTRA_ARGS.
   lineinfile:
-    path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-    line: 'Environment="KUBELET_EXTRA_ARGS={{ kubernetes_kubelet_extra_args }}"'
-    regexp: 'Environment="KUBELET_EXTRA_ARGS='
-    insertafter: '^Environment='
+    path: '{{ kubernetes_kubelet_extra_args_config_file }}'
+    line: 'KUBELET_EXTRA_ARGS={{ kubernetes_kubelet_extra_args }}'
+    regexp: 'KUBELET_EXTRA_ARGS='
     state: present
   register: kubelet_unit_file
 

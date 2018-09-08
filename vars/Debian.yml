@@ -1,0 +1,2 @@
+---
+kubelet_environment_file_path: /etc/default/kubelet

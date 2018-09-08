@@ -1,4 +1,7 @@
 ---
+- name: Include OS-specific variables.
+  include_vars: "{{ ansible_os_family }}.yml"
+
 - include_tasks: setup-RedHat.yml
   when: ansible_os_family == 'RedHat'
 
@@ -15,20 +18,7 @@
   notify: restart kubelet
   with_items: "{{ kubernetes_packages }}"
 
-- name: Configure KUBELET_EXTRA_ARGS.
-  lineinfile:
-    path: '{{ kubernetes_kubelet_extra_args_config_file }}'
-    line: 'KUBELET_EXTRA_ARGS={{ kubernetes_kubelet_extra_args }}'
-    regexp: 'KUBELET_EXTRA_ARGS='
-    state: present
-  register: kubelet_unit_file
-
-- name: Reload systemd unit if args were changed.
-  systemd:
-    state: restarted
-    daemon_reload: yes
-    name: kubelet
-  when: kubelet_unit_file is changed
+- include_tasks: kubelet-setup.yml
 
 - name: Ensure kubelet is started and enabled at boot.
   service:

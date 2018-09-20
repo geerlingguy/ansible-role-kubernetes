@@ -12,6 +12,8 @@ kubernetes_packages:
 kubernetes_role: master
 
 kubernetes_kubelet_extra_args: ""
+# Any additional options for kubeadm init
+kubeadm_init_opts: ""
 
 kubernetes_allow_pods_on_master: True
 kubernetes_enable_web_ui: True

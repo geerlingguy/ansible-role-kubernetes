@@ -6,6 +6,8 @@
     --apiserver-advertise-address={{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address) }}
     --kubernetes-version {{ kubernetes_version }}
     --ignore-preflight-errors={{ kubernetes_ignore_preflight_errors }}
+    {{ kubeadm_init_opts }}
+    
   register: kubeadmin_init
   failed_when: False
   when: kubernetes_init_stat.stat.exists == False

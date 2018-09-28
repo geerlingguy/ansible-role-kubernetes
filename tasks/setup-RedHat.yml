@@ -3,9 +3,9 @@
   yum_repository:
     name: kubernetes
     description: Kubernetes
-    enabled: yes
-    gpgcheck: yes
-    repo_gpgcheck: yes
+    enabled: true
+    gpgcheck: true
+    repo_gpgcheck: true
     baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-{{ kubernetes_yum_arch }}
     gpgkey:
       - https://packages.cloud.google.com/yum/doc/yum-key.gpg
@@ -24,4 +24,4 @@
   command: "yum -q makecache -y --disablerepo='*' --enablerepo='kubernetes'"
   when: kubernetes_rpm_key is changed
   args:
-    warn: no
+    warn: false

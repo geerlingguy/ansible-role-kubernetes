@@ -31,15 +31,15 @@ Whether the particular server will serve as a Kubernetes `master` (default) or `
 
 Extra args to pass to `kubelet` during startup. E.g. to allow `kubelet` to start up even if there is swap is enabled on your server, set this to: `"--fail-swap-on=false"`. Or to specify the node-ip advertised by `kubelet`, set this to `"--node-ip={{ ansible_host }}"`.
 
-    kubernetes_allow_pods_on_master: True
+    kubernetes_allow_pods_on_master: true
 
 Whether to remove the taint that denies pods from being deployed to the Kubernetes master. If you have a single-node cluster, this should definitely be `True`. Otherwise, set to `False` if you want a dedicated Kubernetes master which doesn't run any other pods.
 
-    kubernetes_enable_web_ui: False
+    kubernetes_enable_web_ui: false
 
 Whether to enable the Kubernetes web dashboard UI (only accessible on the master itself, or proxied).
 
-    kuberenetes_debug: False
+    kuberenetes_debug: false
 
 Whether to show extra debug info in Ansible's logs (e.g. the output of the `kubeadm init` command).
 
@@ -52,7 +52,7 @@ Options passed to `kubeadm init` when initializing the Kubernetes master. The `a
 
     kubernetes_apt_release_channel: main
     kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-xenial {{ kubernetes_apt_release_channel }}"
-    kubernetes_apt_ignore_key_error: False
+    kubernetes_apt_ignore_key_error: false
 
 Apt repository options for Kubernetes installation.
 

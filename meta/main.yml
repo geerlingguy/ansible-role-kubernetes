@@ -8,16 +8,16 @@ galaxy_info:
   license: "license (BSD, MIT)"
   min_ansible_version: 2.4
   platforms:
-  - name: EL
-    versions:
-    - 7
-  - name: Debian
-    versions:
-    - stretch
-  - name: Ubuntu
-    versions:
-    - xenial
-    - bionic
+    - name: EL
+      versions:
+        - 7
+    - name: Debian
+      versions:
+        - stretch
+    - name: Ubuntu
+      versions:
+        - xenial
+        - bionic
   galaxy_tags:
     - system
     - containers

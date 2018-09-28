@@ -16,7 +16,7 @@
     kubelet_args_path: '/etc/systemd/system/kubelet.service.d/10-kubeadm.conf'
     kubelet_args_line: "{{ 'Environment=\"KUBELET_EXTRA_ARGS=' + kubernetes_kubelet_extra_args + '\"' }}"
     kubelet_args_regexp: '^Environment='
-  when: kubelet_environment_file.stat.exists == False
+  when: kubelet_environment_file.stat.exists == false
 
 - name: Configure KUBELET_EXTRA_ARGS.
   lineinfile:
@@ -29,6 +29,6 @@
 - name: Reload systemd unit if args were changed.
   systemd:
     state: restarted
-    daemon_reload: yes
+    daemon_reload: true
     name: kubelet
   when: kubelet_config_file is changed

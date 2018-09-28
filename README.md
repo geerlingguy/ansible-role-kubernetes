@@ -43,7 +43,7 @@ Whether to enable the Kubernetes web dashboard UI (only accessible on the master
 
 Whether to show extra debug info in Ansible's logs (e.g. the output of the `kubeadm init` command).
 
-    kubernetes_pod_network_cidr: '10.0.1.0/16'
+    kubernetes_pod_network_cidr: '10.244.0.0/16'
     kubernetes_apiserver_advertise_address: ''
     kubernetes_version: 'stable-1.11'
     kubernetes_ignore_preflight_errors: 'all'

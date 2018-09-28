@@ -24,7 +24,7 @@
   service:
     name: kubelet
     state: started
-    enabled: yes
+    enabled: true
 
 - name: Check if Kubernetes has already been initialized.
   stat:
@@ -37,8 +37,8 @@
 
 # Set up nodes.
 - name: Get the kubeadm join command from the Kubernetes master.
-  shell: kubeadm token create --print-join-command
-  changed_when: False
+  command: kubeadm token create --print-join-command
+  changed_when: false
   when: kubernetes_role == 'master'
   register: kubernetes_join_command_result
 
@@ -47,7 +47,7 @@
     kubernetes_join_command: "{{ kubernetes_join_command_result.stdout }}"
   when: kubernetes_join_command_result.stdout is defined
   delegate_to: "{{ item }}"
-  delegate_facts: True
+  delegate_facts: true
   with_items: "{{ groups['all'] }}"
 
 - include_tasks: node-setup.yml

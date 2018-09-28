@@ -2,31 +2,34 @@
 kubernetes_packages:
   - name: kubelet
     state: present
-  - name: kubeadm
-    state: present
   - name: kubectl
+    state: present
+  - name: kubeadm
     state: present
   - name: kubernetes-cni
     state: present
+
+kubernetes_version: '1.11'
+kubernetes_version_rhel_package: '1.11.3'
 
 kubernetes_role: master
 
 kubernetes_kubelet_extra_args: ""
 kubernetes_kubeadm_init_extra_opts: ""
 
-kubernetes_allow_pods_on_master: True
-kubernetes_enable_web_ui: True
-kuberenetes_debug: False
+kubernetes_allow_pods_on_master: true
+kubernetes_enable_web_ui: true
+kuberenetes_debug: false
 
-kubernetes_pod_network_cidr: '10.0.1.0/16'
+kubernetes_pod_network_cidr: '10.244.0.0/16'
 kubernetes_apiserver_advertise_address: ''
-kubernetes_version: 'stable-1.11'
+kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'
 kubernetes_ignore_preflight_errors: 'all'
 
 kubernetes_apt_release_channel: main
 # Note that xenial repo is used for all Debian derivatives at this time.
 kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-xenial {{ kubernetes_apt_release_channel }}"
-kubernetes_apt_ignore_key_error: False
+kubernetes_apt_ignore_key_error: false
 
 kubernetes_yum_arch: x86_64
 

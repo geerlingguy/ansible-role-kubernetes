@@ -1,0 +1,46 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  vars:
+    # Allow swap in test environments (hard to control in some Docker envs).
+    kubernetes_kubelet_extra_args: "--fail-swap-on=false"
+    docker_install_compose: false
+
+  pre_tasks:
+    - name: Update apt cache.
+      apt: update_cache=true cache_valid_time=600
+      when: ansible_os_family == 'Debian'
+
+    - name: Ensure test dependencies are installed.
+      package: name=iproute state=present
+
+    - name: Gather facts.
+      action: setup
+
+    - name: Use cgroupfs cgroup driver instead of systemd (Red Hat).
+      set_fact:
+        kubernetes_kubelet_extra_args: '"--fail-swap-on=false --cgroup-driver=cgroupfs"'
+      when: ansible_os_family == 'RedHat'
+
+  roles:
+    - role: geerlingguy.docker
+    - role: geerlingguy.kubernetes
+
+  post_tasks:
+    - name: Get cluster info.
+      command: kubectl cluster-info
+      changed_when: false
+      register: kubernetes_info
+
+    - name: Print cluster info.
+      debug: var=kubernetes_info.stdout
+
+    - name: Get all running pods.
+      command: kubectl get pods --all-namespaces
+      changed_when: false
+      register: kubernetes_pods
+
+    - name: Print list of running pods.
+      debug: var=kubernetes_pods.stdout

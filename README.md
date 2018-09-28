@@ -15,12 +15,19 @@ Available variables are listed below, along with default values (see `defaults/m
     kubernetes_packages:
       - name: kubelet
         state: present
+      - name: kubectl
+        state: present
       - name: kubeadm
         state: present
       - name: kubernetes-cni
         state: present
 
 Kubernetes packages to be installed on the server. You can either provide a list of package names, or set `name` and `state` to have more control over whether the package is `present`, `absent`, `latest`, etc.
+
+    kubernetes_version: '1.11'
+    kubernetes_version_rhel_package: '1.11.3'
+
+The minor version of Kubernetes to install. The plain `kubernetes_version` is used to pin an apt package version on Debian, and as the Kubernetes version passed into the `kubeadm init` command (see `kubernetes_version_kubeadm`). The `kubernetes_version_rhel_package` variable must be a specific Kubernetes release, and is used to pin the version on Red Hat / CentOS servers.
 
     kubernetes_role: master
 
@@ -45,7 +52,7 @@ Whether to show extra debug info in Ansible's logs (e.g. the output of the `kube
 
     kubernetes_pod_network_cidr: '10.244.0.0/16'
     kubernetes_apiserver_advertise_address: ''
-    kubernetes_version: 'stable-1.11'
+    kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'
     kubernetes_ignore_preflight_errors: 'all'
 
 Options passed to `kubeadm init` when initializing the Kubernetes master. The `apiserver_advertise_address` defaults to `ansible_default_ipv4.address` if it's left empty.

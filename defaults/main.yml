@@ -9,6 +9,9 @@ kubernetes_packages:
   - name: kubernetes-cni
     state: present
 
+kubernetes_version: '1.11'
+kubernetes_version_rhel_package: '1.11.3'
+
 kubernetes_role: master
 
 kubernetes_kubelet_extra_args: ""
@@ -19,7 +22,7 @@ kuberenetes_debug: false
 
 kubernetes_pod_network_cidr: '10.244.0.0/16'
 kubernetes_apiserver_advertise_address: ''
-kubernetes_version: 'stable-1.11'
+kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'
 kubernetes_ignore_preflight_errors: 'all'
 
 kubernetes_apt_release_channel: main

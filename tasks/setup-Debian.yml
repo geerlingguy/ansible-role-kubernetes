@@ -18,3 +18,8 @@
     repo: "{{ kubernetes_apt_repository }}"
     state: present
     update_cache: false
+
+- name: Add Kubernetes apt preferences file to pin a version.
+  template:
+    src: apt-preferences-kubernetes.j2
+    dest: /etc/apt/preferences.d/kubernetes

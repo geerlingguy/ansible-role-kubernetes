@@ -15,6 +15,7 @@ kubernetes_version_rhel_package: '1.11.3'
 kubernetes_role: master
 
 kubernetes_kubelet_extra_args: ""
+kubernetes_kubeadm_init_extra_opts: ""
 
 kubernetes_allow_pods_on_master: true
 kubernetes_enable_web_ui: true

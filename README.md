@@ -50,10 +50,6 @@ Whether to remove the taint that denies pods from being deployed to the Kubernet
 
 Whether to enable the Kubernetes web dashboard UI (only accessible on the master itself, or proxied).
 
-    kubernetes_debug: false
-
-Whether to show extra debug info in Ansible's logs (e.g. the output of the `kubeadm init` command).
-
     kubernetes_pod_network_cidr: '10.244.0.0/16'
     kubernetes_apiserver_advertise_address: ''
     kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'

@@ -13,10 +13,10 @@
   when: kubernetes_init_stat.stat.exists == false
 
 - name: Print the init output to screen.
-  debug: var=kubeadmin_init.stdout
-  when:
-    - kubernetes_debug
-    - kubernetes_init_stat.stat.exists == false
+  debug:
+    var: kubeadmin_init.stdout
+    verbosity: 2
+  when: kubernetes_init_stat.stat.exists == false
 
 - name: Ensure .kube directory exists.
   file:

@@ -13,13 +13,18 @@
       apt: update_cache=true cache_valid_time=600
       when: ansible_os_family == 'Debian'
 
-    - name: Ensure test dependencies are installed.
+    - name: Ensure test dependencies are installed (RedHat).
       package: name=iproute state=present
+      when: ansible_os_family == 'RedHat'
+
+    - name: Ensure test dependencies are installed (Debian).
+      package: name=iproute2 state=present
+      when: ansible_os_family == 'Debian'
 
     - name: Gather facts.
       action: setup
 
-    - name: Use cgroupfs cgroup driver instead of systemd (Red Hat).
+    - name: Use cgroupfs cgroup driver instead of systemd (RedHat).
       set_fact:
         kubernetes_kubelet_extra_args: '"--fail-swap-on=false --cgroup-driver=cgroupfs"'
       when: ansible_os_family == 'RedHat'

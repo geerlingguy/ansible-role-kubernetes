@@ -47,8 +47,9 @@ Extra args to pass to `kubeadm init` during K8s control plane initialization. E.
 Whether to remove the taint that denies pods from being deployed to the Kubernetes master. If you have a single-node cluster, this should definitely be `True`. Otherwise, set to `False` if you want a dedicated Kubernetes master which doesn't run any other pods.
 
     kubernetes_enable_web_ui: false
+    kubernetes_web_ui_manifest_file: https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
 
-Whether to enable the Kubernetes web dashboard UI (only accessible on the master itself, or proxied).
+Whether to enable the Kubernetes web dashboard UI (only accessible on the master itself, or proxied), and the file containing the web dashboard UI manifest.
 
     kubernetes_pod_network_cidr: '10.244.0.0/16'
     kubernetes_apiserver_advertise_address: ''

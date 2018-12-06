@@ -10,13 +10,13 @@
 
   register: kubeadmin_init
   failed_when: false
-  when: kubernetes_init_stat.stat.exists == false
+  when: not kubernetes_init_stat.stat.exists
 
 - name: Print the init output to screen.
   debug:
     var: kubeadmin_init.stdout
     verbosity: 2
-  when: kubernetes_init_stat.stat.exists == false
+  when: not kubernetes_init_stat.stat.exists
 
 - name: Ensure .kube directory exists.
   file:
@@ -43,7 +43,7 @@
   command: "kubectl taint nodes --all node-role.kubernetes.io/master-"
   when:
     - kubernetes_allow_pods_on_master
-    - kubernetes_init_stat.stat.exists == false
+    - not kubernetes_init_stat.stat.exists
 
 - name: Check if Kubernetes Dashboard UI service already exists.
   shell: kubectl get services --namespace kube-system | grep -q kubernetes-dashboard
@@ -53,7 +53,7 @@
   when: kubernetes_enable_web_ui
 
 - name: Enable the Kubernetes Web Dashboard UI (if configured).
-  command: "kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml"
+  command: "kubectl create -f {{ kubernetes_web_ui_manifest_file }}"
   when:
     - kubernetes_enable_web_ui
     - kubernetes_dashboard_service is failed

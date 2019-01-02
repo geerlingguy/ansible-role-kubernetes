@@ -9,13 +9,6 @@
     {{ kubernetes_kubeadm_init_extra_opts }}
 
   register: kubeadmin_init
-  failed_when: false
-  when: not kubernetes_init_stat.stat.exists
-
-- name: Print the init output to screen.
-  debug:
-    var: kubeadmin_init.stdout
-    verbosity: 2
   when: not kubernetes_init_stat.stat.exists
 
 - name: Ensure .kube directory exists.

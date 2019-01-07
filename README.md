@@ -51,6 +51,10 @@ Whether to remove the taint that denies pods from being deployed to the Kubernet
 
 Whether to enable the Kubernetes web dashboard UI (only accessible on the master itself, or proxied), and the file containing the web dashboard UI manifest.
 
+    kubernetes_pod_network_plugin: 'flannel'
+
+Pod network plugin to use, otherwise called a container network interface (CNI).  Supported options are `flannel` and `kube-router`
+
     kubernetes_pod_network_cidr: '10.244.0.0/16'
     kubernetes_apiserver_advertise_address: ''
     kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'
@@ -72,6 +76,11 @@ Yum repository options for Kubernetes installation.
     kubernetes_flannel_manifest_file: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
 Flannel manifest files to apply to the Kubernetes cluster to enable networking. You can copy your own files to your server and apply them instead, if you need to customize the Flannel networking configuration.
+
+    kubernetes_kuberouter_manifest_file: https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter-all-features.yaml
+    kubernetes_kubeproxy_version: '1.10.2'
+
+Kube-Router manifest file to apply to the Kubernetes cluster to enable Kube-Router networking.  This is activated by setting `kubernetes_pod_network_plugin: 'kube-router'`
 
 ## Dependencies
 

@@ -7,3 +7,15 @@
   register: flannel_result
   when: kubernetes_pod_network_plugin == 'flannel'
   changed_when: "'created' in flannel_result.stdout"
+
+- name: Configure Kube-router networking.
+  command: "{{ item }}"
+  with_items:
+    - kubectl apply -f {{ kubernetes_kuberouter_manifest_file }}
+    - kubectl -n kube-system delete ds kube-proxy
+    - >-
+        docker run --privileged -v /lib/modules:/lib/modules --net=host
+        k8s.gcr.io/kube-proxy-amd64:v{{ kubernetes_kubeproxy_version }} kube-proxy --cleanup
+  register: kuberouter_result
+  when: kubernetes_pod_network_plugin == 'kube-router'
+  changed_when: "'created' in kuberouter_result.stdout"

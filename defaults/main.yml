@@ -37,3 +37,7 @@ kubernetes_yum_arch: x86_64
 # Flannel config files.
 kubernetes_flannel_manifest_file_rbac: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
 kubernetes_flannel_manifest_file: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+# Kube-Router config files.
+kubernetes_kuberouter_manifest_file: >-
+  https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter-all-features.yaml
+kubernetes_kubeproxy_version: '1.10.2'

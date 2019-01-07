@@ -1,0 +1,9 @@
+---
+- name: Configure Flannel networking.
+  command: "{{ item }}"
+  with_items:
+    - kubectl apply -f {{ kubernetes_flannel_manifest_file_rbac }}
+    - kubectl apply -f {{ kubernetes_flannel_manifest_file }}
+  register: flannel_result
+  when: kubernetes_pod_network_plugin == 'flannel'
+  changed_when: "'created' in flannel_result.stdout"

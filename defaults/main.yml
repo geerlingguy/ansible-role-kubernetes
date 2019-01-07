@@ -21,6 +21,7 @@ kubernetes_allow_pods_on_master: true
 kubernetes_enable_web_ui: true
 kubernetes_web_ui_manifest_file: https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
 
+kubernetes_pod_network_plugin: 'flannel'
 kubernetes_pod_network_cidr: '10.244.0.0/16'
 kubernetes_apiserver_advertise_address: ''
 kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'

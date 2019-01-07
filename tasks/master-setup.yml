@@ -29,14 +29,6 @@
     dest: ~/.kube/config
     state: link
 
-- name: Configure Flannel networking.
-  command: "{{ item }}"
-  with_items:
-    - kubectl apply -f {{ kubernetes_flannel_manifest_file_rbac }}
-    - kubectl apply -f {{ kubernetes_flannel_manifest_file }}
-  register: flannel_result
-  changed_when: "'created' in flannel_result.stdout"
-
 # TODO: Check if taint exists with something like `kubectl describe nodes`
 # instead of using kubernetes_init_stat.stat.exists check.
 - name: Allow pods on master node (if configured).
@@ -44,6 +36,10 @@
   when:
     - kubernetes_allow_pods_on_master
     - not kubernetes_init_stat.stat.exists
+
+# Set up pod network.
+- include_tasks: pod-network.yml
+  when: not kubernetes_init_stat.stat.exists
 
 - name: Check if Kubernetes Dashboard UI service already exists.
   shell: kubectl get services --namespace kube-system | grep -q kubernetes-dashboard

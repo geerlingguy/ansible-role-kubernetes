@@ -36,3 +36,6 @@ kubernetes_yum_arch: x86_64
 # Flannel config files.
 kubernetes_flannel_manifest_file_rbac: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
 kubernetes_flannel_manifest_file: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+# Location of the file that is used to enable bridge-nf-call tables for nodes
+sysctl_file_path: "/etc/sysctl.d/99-sysctl.conf"

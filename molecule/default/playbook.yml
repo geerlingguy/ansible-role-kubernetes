@@ -5,7 +5,7 @@
 
   vars:
     # Allow swap in test environments (hard to control in some Docker envs).
-    kubernetes_kubelet_extra_args: "--fail-swap-on=false"
+    kubernetes_kubelet_extra_args: "--fail-swap-on=false --cgroup-driver=cgroupfs"
     docker_install_compose: false
 
   pre_tasks:
@@ -23,11 +23,6 @@
 
     - name: Gather facts.
       action: setup
-
-    - name: Use cgroupfs cgroup driver instead of systemd (RedHat).
-      set_fact:
-        kubernetes_kubelet_extra_args: '"--fail-swap-on=false --cgroup-driver=cgroupfs"'
-      when: ansible_os_family == 'RedHat'
 
   roles:
     - role: geerlingguy.docker

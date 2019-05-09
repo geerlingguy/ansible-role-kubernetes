@@ -49,6 +49,10 @@ Whether to remove the taint that denies pods from being deployed to the Kubernet
     kubernetes_enable_web_ui: false
     kubernetes_web_ui_manifest_file: https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
 
+This is used for the `kubeadm init` command as well as the `kubeadm join` command's --ignore-preflight-errors option
+
+    kubernetes_ignore_preflight_errors: 'all'
+
 Whether to enable the Kubernetes web dashboard UI (only accessible on the master itself, or proxied), and the file containing the web dashboard UI manifest.
 
     kubernetes_pod_network_cidr: '10.244.0.0/16'

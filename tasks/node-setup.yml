@@ -2,5 +2,6 @@
 - name: Join node to Kubernetes master
   shell: >
     {{ kubernetes_join_command }}
+    --ignore-preflight-errors={{ kubernetes_ignore_preflight_errors }}
     creates=/etc/kubernetes/kubelet.conf
   tags: ['skip_ansible_lint']

@@ -11,6 +11,19 @@
 - name: Ensure dependencies are installed.
   package: name=curl state=present
 
+- name: Remove swapfile from /etc/fstab
+  mount:
+    name: "{{ item }}"
+    state: absent
+    fstype: swap 
+  with_items:
+    - swap
+    - none 
+
+- name: Disable swap 
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+
 - name: Install Kubernetes packages.
   package:
     name: "{{ item.name | default(item) }}"

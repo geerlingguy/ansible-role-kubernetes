@@ -1,15 +1,4 @@
 ---
-#- name: Get the kubernetes cidr based on the CNI selected
-#  debug:
-#    msg: "{{ item.cidr }}"
-#  when: item.name  == kubernetes_cni
-#  with_items: "{{ kubernetes_pod_network }}"
-#  register: kubernetes_pod_network_cidr
-#
-#- name: display kubernetes_pod_network_cidr
-#  debug:
-#    msg: "{{ kubernetes_pod_network_cidr.results }}"
-#   
 - name: Initialize Kubernetes master with kubeadm init.
   command: >
     kubeadm init

@@ -2,15 +2,15 @@
 - name: Initialize Kubernetes master with kubeadm init.
   command: >
     kubeadm init
-    --pod-network-cidr={{ kubernetes_pod_network_cidr }}
+    --pod-network-cidr={{ item.cidr }}
     --apiserver-advertise-address={{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}
     --kubernetes-version {{ kubernetes_version_kubeadm }}
     --ignore-preflight-errors={{ kubernetes_ignore_preflight_errors }}
     {{ kubernetes_kubeadm_init_extra_opts }}
-
+  with_items: "{{ kubernetes_pod_network }}"
   register: kubeadmin_init
   failed_when: false
-  when: not kubernetes_init_stat.stat.exists
+  when: not kubernetes_init_stat.stat.exists and item.name == kubernetes_cni
 
 - name: Print the init output to screen.
   debug:
@@ -36,6 +36,15 @@
     - kubectl apply -f {{ kubernetes_flannel_manifest_file }}
   register: flannel_result
   changed_when: "'created' in flannel_result.stdout"
+  when: kubernetes_cni == 'flannel'
+
+- name: Configure Calico networking.
+  command: "{{ item }}"
+  with_items:
+    - kubectl apply -f {{ kubernetes_calico_manifest_file }}
+  register: calico_result
+  changed_when: "'created' in calico_result.stdout"
+  when: kubernetes_cni == 'calico'
 
 # TODO: Check if taint exists with something like `kubectl describe nodes`
 # instead of using kubernetes_init_stat.stat.exists check.

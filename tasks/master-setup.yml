@@ -42,7 +42,7 @@
 - name: Allow pods on master node (if configured).
   command: "kubectl taint nodes --all node-role.kubernetes.io/master-"
   when:
-    - kubernetes_allow_pods_on_master
+    - kubernetes_allow_pods_on_master | bool
     - not kubernetes_init_stat.stat.exists
 
 - name: Check if Kubernetes Dashboard UI service already exists.
@@ -50,10 +50,10 @@
   changed_when: false
   failed_when: false
   register: kubernetes_dashboard_service
-  when: kubernetes_enable_web_ui
+  when: kubernetes_enable_web_ui | bool
 
 - name: Enable the Kubernetes Web Dashboard UI (if configured).
   command: "kubectl create -f {{ kubernetes_web_ui_manifest_file }}"
   when:
-    - kubernetes_enable_web_ui
+    - kubernetes_enable_web_ui | bool
     - kubernetes_dashboard_service is failed

@@ -85,7 +85,7 @@ None.
 - hosts: all
 
   vars:
-    kubernetes_allow_pods_on_master: True
+    kubernetes_allow_pods_on_master: true
 
   roles:
     - geerlingguy.docker
@@ -112,7 +112,7 @@ Playbook:
 - hosts: all
 
   vars:
-    kubernetes_allow_pods_on_master: True
+    kubernetes_allow_pods_on_master: true
 
   roles:
     - geerlingguy.docker

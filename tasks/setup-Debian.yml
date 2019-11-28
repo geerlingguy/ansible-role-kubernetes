@@ -8,7 +8,7 @@
 
 - name: Add Kubernetes apt key.
   apt_key:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    url: "{{ kubernetes_apt_gpgkey }}"
     state: present
   register: add_repository_key
   ignore_errors: "{{ kubernetes_apt_ignore_key_error }}"

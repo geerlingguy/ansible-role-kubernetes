@@ -42,6 +42,10 @@ Extra args to pass to `kubelet` during startup. E.g. to allow `kubelet` to start
 
 Extra args to pass to `kubeadm init` during K8s control plane initialization. E.g. to specify extra Subject Alternative Names for API server certificate, set this to: `"--apiserver-cert-extra-sans my-custom.host"`
 
+    kubernetes_join_command_extra_opts: ""
+
+Extra args to pass to the generated `kubeadm join` command during K8s node initialization. E.g. to ignore certain preflight errors like swap being enabled, set this to: `--ignore-preflight-errors=Swap`
+
     kubernetes_allow_pods_on_master: true
 
 Whether to remove the taint that denies pods from being deployed to the Kubernetes master. If you have a single-node cluster, this should definitely be `True`. Otherwise, set to `False` if you want a dedicated Kubernetes master which doesn't run any other pods.

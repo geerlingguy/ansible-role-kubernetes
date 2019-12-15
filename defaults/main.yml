@@ -22,7 +22,12 @@ kubernetes_allow_pods_on_master: true
 kubernetes_enable_web_ui: true
 kubernetes_web_ui_manifest_file: https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
 
-kubernetes_pod_network_cidr: '10.244.0.0/16'
+kubernetes_cni: 'calico'
+kubernetes_pod_network:
+  - name: 'flannel'
+    cidr: '10.244.0.0/16'
+  - name: 'calico'
+    cidr: '192.168.0.0/16'
 kubernetes_apiserver_advertise_address: ''
 kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'
 kubernetes_ignore_preflight_errors: 'all'
@@ -37,3 +42,6 @@ kubernetes_yum_arch: x86_64
 # Flannel config files.
 kubernetes_flannel_manifest_file_rbac: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
 kubernetes_flannel_manifest_file: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+# Calico config files
+kubernetes_calico_manifest_file: https://docs.projectcalico.org/v3.7/manifests/calico.yaml

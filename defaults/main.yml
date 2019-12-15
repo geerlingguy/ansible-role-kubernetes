@@ -22,12 +22,14 @@ kubernetes_allow_pods_on_master: true
 kubernetes_enable_web_ui: true
 kubernetes_web_ui_manifest_file: https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
 
-kubernetes_cni: 'calico'
 kubernetes_pod_network:
-  - name: 'flannel'
-    cidr: '10.244.0.0/16'
-  - name: 'calico'
-    cidr: '192.168.0.0/16'
+  # Flannel CNI.
+  cni: 'flannel'
+  cidr: '10.244.0.0/16'
+  # Calico CNI.
+  # cni: 'calico'
+  # cidr: '192.168.0.0/16'
+
 kubernetes_apiserver_advertise_address: ''
 kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'
 kubernetes_ignore_preflight_errors: 'all'

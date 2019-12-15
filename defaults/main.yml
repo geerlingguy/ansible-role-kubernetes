@@ -9,8 +9,8 @@ kubernetes_packages:
   - name: kubernetes-cni
     state: present
 
-kubernetes_version: '1.15'
-kubernetes_version_rhel_package: '1.15.0'
+kubernetes_version: '1.16'
+kubernetes_version_rhel_package: '1.16.4'
 
 kubernetes_role: master
 

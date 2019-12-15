@@ -1,0 +1,50 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  vars:
+    kubernetes_pod_network:
+      cni: 'calico'
+      cidr: '192.168.0.0/16'
+
+    # Allow swap in test environments (hard to control in some Docker envs).
+    kubernetes_kubelet_extra_args: "--fail-swap-on=false --cgroup-driver=cgroupfs"
+    docker_install_compose: false
+
+  pre_tasks:
+    - name: Update apt cache.
+      apt: update_cache=true cache_valid_time=600
+      when: ansible_os_family == 'Debian'
+
+    - name: Ensure test dependencies are installed (RedHat).
+      package: name=iproute state=present
+      when: ansible_os_family == 'RedHat'
+
+    - name: Ensure test dependencies are installed (Debian).
+      package: name=iproute2 state=present
+      when: ansible_os_family == 'Debian'
+
+    - name: Gather facts.
+      action: setup
+
+  roles:
+    - role: geerlingguy.docker
+    - role: geerlingguy.kubernetes
+
+  post_tasks:
+    - name: Get cluster info.
+      command: kubectl cluster-info
+      changed_when: false
+      register: kubernetes_info
+
+    - name: Print cluster info.
+      debug: var=kubernetes_info.stdout
+
+    - name: Get all running pods.
+      command: kubectl get pods --all-namespaces
+      changed_when: false
+      register: kubernetes_pods
+
+    - name: Print list of running pods.
+      debug: var=kubernetes_pods.stdout

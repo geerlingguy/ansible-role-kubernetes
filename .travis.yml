@@ -8,8 +8,10 @@ env:
   matrix:
     - MOLECULE_DISTRO: centos7
     - MOLECULE_DISTRO: ubuntu1804
-    - MOLECULE_DISTRO: debian9
     - MOLECULE_DISTRO: debian10
+
+    - MOLECULE_DISTRO: debian10
+      MOLECULE_PLAYBOOK: playbook-calico.yml
 
 install:
   # Install test dependencies.

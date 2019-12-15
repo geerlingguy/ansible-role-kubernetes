@@ -10,7 +10,7 @@
   with_items: "{{ kubernetes_pod_network }}"
   register: kubeadmin_init
   failed_when: false
-  when: not kubernetes_init_stat.stat.exists and item.name == kubernetes_cni
+  when: not kubernetes_init_stat.stat.exists
 
 - name: Print the init output to screen.
   debug:

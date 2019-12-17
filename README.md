@@ -55,13 +55,13 @@ Whether to remove the taint that denies pods from being deployed to the Kubernet
 
 Whether to enable the Kubernetes web dashboard UI (only accessible on the master itself, or proxied), and the file containing the web dashboard UI manifest.
 
-kubernetes_pod_network:
-  # Flannel CNI.
-  cni: 'flannel'
-  cidr: '10.244.0.0/16'
-  # Calico CNI.
-  # cni: 'calico'
-  # cidr: '192.168.0.0/16'
+    kubernetes_pod_network:
+      # Flannel CNI.
+      cni: 'flannel'
+      cidr: '10.244.0.0/16'
+      # Calico CNI.
+      # cni: 'calico'
+      # cidr: '192.168.0.0/16'
 
 This role currently supports `flannel` (default) or `calico` for cluster pod networking. Choose one or the other for your cluster; converting between the two is not done automatically and could result in broken networking, and should be done outside of this role.
 

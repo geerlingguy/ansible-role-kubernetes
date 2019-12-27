@@ -50,7 +50,7 @@
   when: kubernetes_join_command_result.stdout is defined
   delegate_to: "{{ item }}"
   delegate_facts: true
-  with_items: "{{ groups['all'] }}"
+  with_items: "{{ groups[kubernetes_join_group] }}"
 
 - include_tasks: node-setup.yml
   when: kubernetes_role == 'node'

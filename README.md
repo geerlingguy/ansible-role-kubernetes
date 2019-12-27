@@ -46,6 +46,10 @@ Extra args to pass to `kubeadm init` during K8s control plane initialization. E.
 
 Extra args to pass to the generated `kubeadm join` command during K8s node initialization. E.g. to ignore certain preflight errors like swap being enabled, set this to: `--ignore-preflight-errors=Swap`
 
+    kubernetes_join_group: 'all'
+
+The scope to which group the join command will be applied.  The default is set to 'all' but you may want to specify a specific group if there are more than one cluster in an inventory (in which case `kubernetes_role` may be defined in separate clusters, which are not relevant to a particular execution).
+
     kubernetes_allow_pods_on_master: true
 
 Whether to remove the taint that denies pods from being deployed to the Kubernetes master. If you have a single-node cluster, this should definitely be `True`. Otherwise, set to `False` if you want a dedicated Kubernetes master which doesn't run any other pods.

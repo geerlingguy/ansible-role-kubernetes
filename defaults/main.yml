@@ -17,6 +17,7 @@ kubernetes_role: master
 kubernetes_kubelet_extra_args: ""
 kubernetes_kubeadm_init_extra_opts: ""
 kubernetes_join_command_extra_opts: ""
+kubernetes_join_group: 'all'
 
 kubernetes_allow_pods_on_master: true
 kubernetes_enable_web_ui: true

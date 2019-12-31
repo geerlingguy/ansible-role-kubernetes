@@ -46,9 +46,7 @@
   when: kubernetes_pod_network.cni == 'calico'
 
 - name: "Get K8s version"
-  shell: |
-    set -o pipefail
-    kubectl version | base64 | tr -d '\n'
+  shell: kubectl version | base64 | tr -d '\n'
   register: k8_version
   when: kubernetes_pod_network.cni == 'weave'
 

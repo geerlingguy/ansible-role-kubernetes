@@ -62,7 +62,10 @@ Whether to enable the Kubernetes web dashboard UI (only accessible on the master
       # Calico CNI.
       # cni: 'calico'
       # cidr: '192.168.0.0/16'
-
+      # Weave CNI.
+      # cni: 'weave'
+      # cidr: '192.168.0.0/16'
+      
 This role currently supports `flannel` (default) or `calico` for cluster pod networking. Choose one or the other for your cluster; converting between the two is not done automatically and could result in broken networking, and should be done outside of this role.
 
     kubernetes_apiserver_advertise_address: ''

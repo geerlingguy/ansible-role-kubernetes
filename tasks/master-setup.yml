@@ -45,7 +45,6 @@
   changed_when: "'created' in calico_result.stdout"
   when: kubernetes_pod_network.cni == 'calico'
 
-# LINT-ERROR
 - name: "Get K8s version"
   shell: |
     set -o pipefail

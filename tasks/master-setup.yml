@@ -2,12 +2,18 @@
 - name: Initialize Kubernetes master with kubeadm init.
   command: >
     kubeadm init
-    --pod-network-cidr={{ kubernetes_pod_network_cidr }}
-    --apiserver-advertise-address={{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address) }}
+    --pod-network-cidr={{ kubernetes_pod_network.cidr }}
+    --apiserver-advertise-address={{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}
     --kubernetes-version {{ kubernetes_version_kubeadm }}
     --ignore-preflight-errors={{ kubernetes_ignore_preflight_errors }}
     {{ kubernetes_kubeadm_init_extra_opts }}
+  register: kubeadmin_init
+  when: not kubernetes_init_stat.stat.exists
 
+- name: Print the init output to screen.
+  debug:
+    var: kubeadmin_init.stdout
+    verbosity: 2
   when: not kubernetes_init_stat.stat.exists
 
 - name: Ensure .kube directory exists.
@@ -28,13 +34,22 @@
     - kubectl apply -f {{ kubernetes_flannel_manifest_file }}
   register: flannel_result
   changed_when: "'created' in flannel_result.stdout"
+  when: kubernetes_pod_network.cni == 'flannel'
+
+- name: Configure Calico networking.
+  command: "{{ item }}"
+  with_items:
+    - kubectl apply -f {{ kubernetes_calico_manifest_file }}
+  register: calico_result
+  changed_when: "'created' in calico_result.stdout"
+  when: kubernetes_pod_network.cni == 'calico'
 
 # TODO: Check if taint exists with something like `kubectl describe nodes`
 # instead of using kubernetes_init_stat.stat.exists check.
 - name: Allow pods on master node (if configured).
   command: "kubectl taint nodes --all node-role.kubernetes.io/master-"
   when:
-    - kubernetes_allow_pods_on_master
+    - kubernetes_allow_pods_on_master | bool
     - not kubernetes_init_stat.stat.exists
 
 - name: Check if Kubernetes Dashboard UI service already exists.
@@ -42,10 +57,10 @@
   changed_when: false
   failed_when: false
   register: kubernetes_dashboard_service
-  when: kubernetes_enable_web_ui
+  when: kubernetes_enable_web_ui | bool
 
 - name: Enable the Kubernetes Web Dashboard UI (if configured).
   command: "kubectl create -f {{ kubernetes_web_ui_manifest_file }}"
   when:
-    - kubernetes_enable_web_ui
+    - kubernetes_enable_web_ui | bool
     - kubernetes_dashboard_service is failed

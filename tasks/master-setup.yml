@@ -8,7 +8,6 @@
     --ignore-preflight-errors={{ kubernetes_ignore_preflight_errors }}
     {{ kubernetes_kubeadm_init_extra_opts }}
   register: kubeadmin_init
-  failed_when: false
   when: not kubernetes_init_stat.stat.exists
 
 - name: Print the init output to screen.

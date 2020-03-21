@@ -63,4 +63,4 @@
   command: "kubectl create -f {{ kubernetes_web_ui_manifest_file }}"
   when:
     - kubernetes_enable_web_ui | bool
-    - kubernetes_dashboard_service.stdout == ""
+    - not kubernetes_dashboard_service.stdout | bool

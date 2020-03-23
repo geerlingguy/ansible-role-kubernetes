@@ -44,6 +44,19 @@
   changed_when: "'created' in calico_result.stdout"
   when: kubernetes_pod_network.cni == 'calico'
 
+- name: "Get K8s version"
+  shell: kubectl version | base64 | tr -d '\n'
+  register: k8_version
+  when: kubernetes_pod_network.cni == 'weave'
+
+- name: Configure Weave networking.
+  command: "{{ item }}"
+  with_items:
+    - "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version={{ k8_version.stdout_lines[0] }}"
+  register: weave_result
+  changed_when: "'created' in weave_result.stdout"
+  when: kubernetes_pod_network.cni == 'weave'
+
 # TODO: Check if taint exists with something like `kubectl describe nodes`
 # instead of using kubernetes_init_stat.stat.exists check.
 - name: Allow pods on master node (if configured).

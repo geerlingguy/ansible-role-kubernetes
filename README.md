@@ -24,8 +24,8 @@ Available variables are listed below, along with default values (see `defaults/m
 
 Kubernetes packages to be installed on the server. You can either provide a list of package names, or set `name` and `state` to have more control over whether the package is `present`, `absent`, `latest`, etc.
 
-    kubernetes_version: '1.16'
-    kubernetes_version_rhel_package: '1.16.4'
+    kubernetes_version: '1.17'
+    kubernetes_version_rhel_package: '1.17.2'
 
 The minor version of Kubernetes to install. The plain `kubernetes_version` is used to pin an apt package version on Debian, and as the Kubernetes version passed into the `kubeadm init` command (see `kubernetes_version_kubeadm`). The `kubernetes_version_rhel_package` variable must be a specific Kubernetes release, and is used to pin the version on Red Hat / CentOS servers.
 

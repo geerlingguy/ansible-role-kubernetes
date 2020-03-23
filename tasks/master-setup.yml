@@ -44,15 +44,16 @@
   changed_when: "'created' in calico_result.stdout"
   when: kubernetes_pod_network.cni == 'calico'
 
-- name: "Get K8s version"
+- name: Get Kubernetes version for Weave installation.
   shell: kubectl version | base64 | tr -d '\n'
-  register: k8_version
+  changed_when: false
+  register: kubectl_version
   when: kubernetes_pod_network.cni == 'weave'
 
 - name: Configure Weave networking.
   command: "{{ item }}"
   with_items:
-    - "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version={{ k8_version.stdout_lines[0] }}"
+    - "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version={{ kubectl_version.stdout_lines[0] }}"
   register: weave_result
   changed_when: "'created' in weave_result.stdout"
   when: kubernetes_pod_network.cni == 'weave'

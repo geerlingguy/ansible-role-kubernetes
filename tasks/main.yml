@@ -23,13 +23,13 @@
 - name: Set sysctl for IPv4 bridges
   sysctl:
     name: net.bridge.bridge-nf-call-iptables
-    value: 1
+    value: '1'
     state: present
 
 - name: Set sysctl for IPv6 bridges
   sysctl:
     name: net.bridge.bridge-nf-call-ip6tables
-    value: 1
+    value: '1'
     state: present
 
 - include_tasks: kubelet-setup.yml

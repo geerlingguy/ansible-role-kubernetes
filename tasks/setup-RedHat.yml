@@ -19,6 +19,8 @@
   with_items:
     - https://packages.cloud.google.com/yum/doc/yum-key.gpg
     - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+  environment:
+    https_proxy: "{{ kubernetes_yum_key_https_proxy | default(ansible_env.https_proxy | default('')) }}"
 
 - name: Make cache if Kubernetes GPG key changed.
   command: "yum -q makecache -y --disablerepo='*' --enablerepo='kubernetes'"

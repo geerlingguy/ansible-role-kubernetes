@@ -19,6 +19,8 @@ Available variables are listed below, along with default values (see `defaults/m
         state: present
       - name: kubeadm
         state: present
+      - name: kubernetes-cni
+        state: present
 
 Kubernetes packages to be installed on the server. You can either provide a list of package names, or set `name` and `state` to have more control over whether the package is `present`, `absent`, `latest`, etc.
 

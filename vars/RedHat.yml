@@ -7,3 +7,5 @@ kubernetes_packages:
     state: present
   - name: kubeadm-{{ kubernetes_version_rhel_package }}-0
     state: present
+  - name: kubernetes-cni
+    state: present

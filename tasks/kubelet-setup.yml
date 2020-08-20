@@ -24,6 +24,7 @@
     line: '{{ kubelet_args_line }}'
     regexp: '{{ kubelet_args_regexp }}'
     state: present
+    mode: 0644
   register: kubelet_config_file
 
 - name: Reload systemd unit if args were changed.

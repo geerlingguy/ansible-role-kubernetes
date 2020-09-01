@@ -18,19 +18,7 @@
   notify: restart kubelet
   with_items: "{{ kubernetes_packages }}"
 
-# per the install doc, 
-# https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
-- name: Set sysctl for IPv4 bridges
-  sysctl:
-    name: net.bridge.bridge-nf-call-iptables
-    value: '1'
-    state: present
-
-- name: Set sysctl for IPv6 bridges
-  sysctl:
-    name: net.bridge.bridge-nf-call-ip6tables
-    value: '1'
-    state: present
+- include_tasks: sysctl-setup.yml
 
 - include_tasks: kubelet-setup.yml
 

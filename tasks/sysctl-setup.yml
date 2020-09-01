@@ -1,13 +1,21 @@
 ---
-# See: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
-- name: Set sysctl for IPv4 bridges
-  sysctl:
-    name: net.bridge.bridge-nf-call-iptables
-    value: '1'
+- name: Ensure procps is installed.
+  package:
+    name: "{{ procps_package }}"
     state: present
+  when: >
+    ansible_distribution != 'Debian'
+    or ansible_distribution_major_version | int < 10
 
-- name: Set sysctl for IPv6 bridges
+# See: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
+- name: Let iptables see bridged traffic.
   sysctl:
-    name: net.bridge.bridge-nf-call-ip6tables
+    name: "{{ item }}"
     value: '1'
     state: present
+  loop:
+    - net.bridge.bridge-nf-call-iptables
+    - net.bridge.bridge-nf-call-ip6tables
+  when: >
+    ansible_distribution != 'Debian'
+    or ansible_distribution_major_version | int < 10

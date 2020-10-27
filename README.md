@@ -1,6 +1,6 @@
 # Ansible Role: Kubernetes
 
-[![Build Status](https://travis-ci.org/geerlingguy/ansible-role-kubernetes.svg?branch=master)](https://travis-ci.org/geerlingguy/ansible-role-kubernetes)
+[![Build Status](https://travis-ci.com/geerlingguy/ansible-role-kubernetes.svg?branch=master)](https://travis-ci.com/geerlingguy/ansible-role-kubernetes)
 
 An Ansible Role that installs [Kubernetes](https://kubernetes.io) on Linux.
 

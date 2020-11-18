@@ -40,6 +40,10 @@ kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-xenial {{ k
 kubernetes_apt_ignore_key_error: false
 
 kubernetes_yum_arch: x86_64
+kubernetes_yum_base_url: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-{{ kubernetes_yum_arch }}"
+kubernetes_yum_gpg_key:
+  - https://packages.cloud.google.com/yum/doc/yum-key.gpg
+  - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 
 # Flannel config files.
 kubernetes_flannel_manifest_file_rbac: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml

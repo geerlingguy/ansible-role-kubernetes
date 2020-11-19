@@ -83,8 +83,12 @@ Options passed to `kubeadm init` when initializing the Kubernetes master. The `k
 Apt repository options for Kubernetes installation.
 
     kubernetes_yum_arch: x86_64
+    kubernetes_yum_base_url: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-{{ kubernetes_yum_arch }}"
+    kubernetes_yum_gpg_key:
+      - https://packages.cloud.google.com/yum/doc/yum-key.gpg
+      - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 
-Yum repository options for Kubernetes installation.
+Yum repository options for Kubernetes installation. You can change `kubernete_yum_gpg_key` to a different url if you are behind a firewall or provide a trustworthy mirror. Usually in combination with changing `kubernetes_yum_base_url` as well.
 
     kubernetes_flannel_manifest_file_rbac: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
     kubernetes_flannel_manifest_file: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml

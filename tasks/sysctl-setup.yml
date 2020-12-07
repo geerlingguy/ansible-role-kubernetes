@@ -9,7 +9,7 @@
 
 # See: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
 - name: Let iptables see bridged traffic.
-  sysctl:
+  ansible.posix.sysctl:
     name: "{{ item }}"
     value: '1'
     state: present

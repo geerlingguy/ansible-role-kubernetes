@@ -5,6 +5,7 @@
       - apt-transport-https
       - ca-certificates
     state: present
+  when: kubernetes_enable_repository|bool
 
 - name: Add Kubernetes apt key.
   apt_key:
@@ -12,15 +13,18 @@
     state: present
   register: add_repository_key
   ignore_errors: "{{ kubernetes_apt_ignore_key_error }}"
+  when: kubernetes_enable_repository|bool
 
 - name: Add Kubernetes repository.
   apt_repository:
     repo: "{{ kubernetes_apt_repository }}"
     state: present
     update_cache: true
+  when: kubernetes_enable_repository|bool
 
 - name: Add Kubernetes apt preferences file to pin a version.
   template:
     src: apt-preferences-kubernetes.j2
     dest: /etc/apt/preferences.d/kubernetes
     mode: 0644
+  when: kubernetes_enable_repository|bool

@@ -34,6 +34,9 @@ kubernetes_apiserver_advertise_address: ''
 kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'
 kubernetes_ignore_preflight_errors: 'all'
 
+# Configure kubernetes apt/yum repository
+kubernetes_enable_repository: true
+
 kubernetes_apt_release_channel: main
 # Note that xenial repo is used for all Debian derivatives at this time.
 kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-xenial {{ kubernetes_apt_release_channel }}"

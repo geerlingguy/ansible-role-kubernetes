@@ -18,6 +18,8 @@
   notify: restart kubelet
   with_items: "{{ kubernetes_packages }}"
 
+- include_tasks: pin-version.yml
+
 - include_tasks: sysctl-setup.yml
 
 - include_tasks: kubelet-setup.yml

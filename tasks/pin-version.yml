@@ -1,4 +1,4 @@
-
+---
 - name: Pin package version for RedHat with versionlock yum plugin
   when: ansible_os_family == 'RedHat'
   block:
@@ -14,7 +14,7 @@
     changed_when: "'versionlock added: 1' in versionlock_result.stdout_lines"
     args:
       warn: false
-  
+
 - name: Add Kubernetes apt preferences file to pin a version.
   when: ansible_os_family == 'Debian'
   template:

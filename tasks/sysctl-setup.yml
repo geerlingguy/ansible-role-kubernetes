@@ -7,6 +7,17 @@
     ansible_distribution != 'Debian'
     or ansible_distribution_major_version | int < 10
 
+- name: Ensure the kernel modules are loaded.
+  modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - overlay
+    - br_netfilter
+  when: >
+    ansible_distribution != 'Debian'
+    or ansible_distribution_major_version | int < 10
+
 # See: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
 - name: Let iptables see bridged traffic.
   sysctl:
@@ -19,3 +30,6 @@
   when: >
     ansible_distribution != 'Debian'
     or ansible_distribution_major_version | int < 10
+
+- name: Enable ip forwarding.
+  shell: echo '1' > /proc/sys/net/ipv4/ip_forward

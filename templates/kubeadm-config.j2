@@ -12,7 +12,7 @@ localAPIEndpoint:
   advertiseAddress: {{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}
   bindPort: 6443
 nodeRegistration:
-  criSocket: /var/run/dockershim.sock
+  criSocket: /run/containerd/containerd.sock
   name: node1
   taints:
   - effect: NoSchedule
@@ -24,14 +24,13 @@ apiServer:
   timeoutForControlPlane: 4m0s
 certificatesDir: /etc/kubernetes/pki
 clusterName: kubernetes
-controllerManager: {}
 dns:
   type: CoreDNS
 etcd:
   local:
     dataDir: /var/lib/etcd
 imageRepository: k8s.gcr.io
-kubernetesVersion: v1.17.0
+kubernetesVersion: {{ kubernetes_kubeadm_version }}
 networking:
   dnsDomain: cluster.local
   serviceSubnet: 10.96.0.0/12
@@ -40,3 +39,7 @@ controllerManager:
   extraArgs:
     node-cidr-mask-size: "{{ kubernetes_kube_controller_manager_node_cidr_mask_size }}"
 scheduler: {}
+---
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+cgroupDriver: containerd

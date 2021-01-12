@@ -15,6 +15,9 @@
     dest: ~/.kube/kubeadm-config.yml
     mode: 0644
 
+- name: Pull core kubernetes images.
+  command: kubeadm config images pull
+
 - name: Initialize Kubernetes master with kubeadm init.
   command: >
     kubeadm init

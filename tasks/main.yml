@@ -20,6 +20,10 @@
 
 - include_tasks: sysctl-setup.yml
 
+- include_tasks: containerd.yml
+
+- include_tasks: crictl.yml
+
 - include_tasks: kubelet-setup.yml
 
 - name: Ensure kubelet is started and enabled at boot.

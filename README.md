@@ -70,6 +70,11 @@ Whether to enable the Kubernetes web dashboard UI (only accessible on the master
 
 This role currently supports `flannel` (default), `calico` or `weave` for cluster pod networking. Choose only one for your cluster; converting between them is not done automatically and could result in broken networking; if you need to switch from one to another, it should be done outside of this role.
 
+    kubernetes_service_network:
+      cidr: '10.96.0.0/12'
+
+The role makes use of a kubeadmn configuration file and you can specify network range you wish to use for service ip addresses.
+
     kubernetes_apiserver_advertise_address: ''
     kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'
     kubernetes_ignore_preflight_errors: 'all'

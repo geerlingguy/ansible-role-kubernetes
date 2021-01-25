@@ -4,7 +4,6 @@
     name:
       - apt-transport-https
       - ca-certificates
-      - containerd
     state: present
 
 - name: Add Kubernetes apt key.

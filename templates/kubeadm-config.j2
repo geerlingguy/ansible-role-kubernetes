@@ -12,7 +12,7 @@ localAPIEndpoint:
   advertiseAddress: {{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}
   bindPort: 6443
 nodeRegistration:
-  criSocket: /run/containerd/containerd.sock
+  criSocket: {{ kubernetes_cri_socket }}
   name: node1
   taints:
   - effect: NoSchedule
@@ -23,7 +23,7 @@ kind: ClusterConfiguration
 apiServer:
   timeoutForControlPlane: 4m0s
 certificatesDir: /etc/kubernetes/pki
-clusterName: kubernetes
+clusterName: {{ kubernetes_cluster_name }}
 dns:
   type: CoreDNS
 etcd:
@@ -33,7 +33,7 @@ imageRepository: k8s.gcr.io
 kubernetesVersion: {{ kubernetes_kubeadm_version }}
 networking:
   dnsDomain: cluster.local
-  serviceSubnet: 10.96.0.0/12
+  serviceSubnet: {{ kubernetes_service_network.cidr }}
   podSubnet: {{ kubernetes_pod_network.cidr }}
 controllerManager:
   extraArgs:

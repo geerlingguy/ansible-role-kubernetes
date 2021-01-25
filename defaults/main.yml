@@ -12,10 +12,9 @@ kubernetes_packages:
 kubernetes_version: '1.19'
 kubernetes_version_rhel_package: '1.19.0'
 kubernetes_kubeadm_version: 'v1.19.0'
-crictl_version: 'v1.19.0'
 
 kubernetes_role: master
-
+kubernetes_cluster_name: mycluster
 kubernetes_kubelet_extra_args: ""
 kubernetes_kubeadm_init_extra_opts: ""
 kubernetes_join_command_extra_opts: ""
@@ -31,6 +30,12 @@ kubernetes_pod_network:
   # Calico CNI.
   # cni: 'calico'
   # cidr: '192.168.0.0/16'
+
+kubernetes_service_network:
+    cidr: '10.96.0.0/12'
+
+kubernetes_cri_socket: '/var/run/docker.sock'
+# containerd - '/run/containerd/containerd.sock'
 
 kubernetes_apiserver_advertise_address: ''
 kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'

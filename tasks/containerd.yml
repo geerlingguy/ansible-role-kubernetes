@@ -1,8 +1,0 @@
-- name: Create the containerd folder in /etc.
-  file:
-    path: /etc/containerd
-    state: directory
-
-- name: Generate a containerd config.
-  shell: containerd config default > /etc/containerd/config.toml
-  notify: restart containerd

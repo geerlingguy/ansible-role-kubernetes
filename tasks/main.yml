@@ -9,7 +9,9 @@
   when: ansible_os_family == 'Debian'
 
 - name: Ensure dependencies are installed.
-  package: name=curl state=present
+  package:
+    name: curl
+    state: present
 
 - name: Install Kubernetes packages.
   package:
@@ -19,10 +21,6 @@
   with_items: "{{ kubernetes_packages }}"
 
 - include_tasks: sysctl-setup.yml
-
-- include_tasks: containerd.yml
-
-- include_tasks: crictl.yml
 
 - include_tasks: kubelet-setup.yml
 
@@ -60,3 +58,7 @@
 
 - include_tasks: node-setup.yml
   when: kubernetes_role == 'node'
+
+- name: Pause for 5 minutes while Kubernetes initializes core services
+  pause:
+      minutes: 5

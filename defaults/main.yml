@@ -39,7 +39,7 @@ kubernetes_apt_release_channel: main
 kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-xenial {{ kubernetes_apt_release_channel }}"
 kubernetes_apt_ignore_key_error: false
 
-kubernetes_yum_arch: x86_64
+kubernetes_yum_arch: '$basearch'
 kubernetes_yum_base_url: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-{{ kubernetes_yum_arch }}"
 kubernetes_yum_gpg_key:
   - https://packages.cloud.google.com/yum/doc/yum-key.gpg

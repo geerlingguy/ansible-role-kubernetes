@@ -1,6 +1,6 @@
 # Ansible Role: Kubernetes
 
-[![Build Status](https://travis-ci.org/geerlingguy/ansible-role-kubernetes.svg?branch=master)](https://travis-ci.org/geerlingguy/ansible-role-kubernetes)
+[![CI](https://github.com/geerlingguy/ansible-role-kubernetes/workflows/CI/badge.svg?event=push)](https://github.com/geerlingguy/ansible-role-kubernetes/actions?query=workflow%3ACI)
 
 An Ansible Role that installs [Kubernetes](https://kubernetes.io) on Linux.
 
@@ -24,8 +24,8 @@ Available variables are listed below, along with default values (see `defaults/m
 
 Kubernetes packages to be installed on the server. You can either provide a list of package names, or set `name` and `state` to have more control over whether the package is `present`, `absent`, `latest`, etc.
 
-    kubernetes_version: '1.13'
-    kubernetes_version_rhel_package: '1.13.1'
+    kubernetes_version: '1.17'
+    kubernetes_version_rhel_package: '1.17.2'
 
 The minor version of Kubernetes to install. The plain `kubernetes_version` is used to pin an apt package version on Debian, and as the Kubernetes version passed into the `kubeadm init` command (see `kubernetes_version_kubeadm`). The `kubernetes_version_rhel_package` variable must be a specific Kubernetes release, and is used to pin the version on Red Hat / CentOS servers.
 
@@ -42,6 +42,10 @@ Extra args to pass to `kubelet` during startup. E.g. to allow `kubelet` to start
 
 Extra args to pass to `kubeadm init` during K8s control plane initialization. E.g. to specify extra Subject Alternative Names for API server certificate, set this to: `"--apiserver-cert-extra-sans my-custom.host"`
 
+    kubernetes_join_command_extra_opts: ""
+
+Extra args to pass to the generated `kubeadm join` command during K8s node initialization. E.g. to ignore certain preflight errors like swap being enabled, set this to: `--ignore-preflight-errors=Swap`
+
     kubernetes_allow_pods_on_master: true
 
 Whether to remove the taint that denies pods from being deployed to the Kubernetes master. If you have a single-node cluster, this should definitely be `True`. Otherwise, set to `False` if you want a dedicated Kubernetes master which doesn't run any other pods.
@@ -51,12 +55,26 @@ Whether to remove the taint that denies pods from being deployed to the Kubernet
 
 Whether to enable the Kubernetes web dashboard UI (only accessible on the master itself, or proxied), and the file containing the web dashboard UI manifest.
 
-    kubernetes_pod_network_cidr: '10.244.0.0/16'
+    kubernetes_pod_network:
+      # Flannel CNI.
+      cni: 'flannel'
+      cidr: '10.244.0.0/16'
+      #
+      # Calico CNI.
+      # cni: 'calico'
+      # cidr: '192.168.0.0/16'
+      #
+      # Weave CNI.
+      # cni: 'weave'
+      # cidr: '192.168.0.0/16'
+
+This role currently supports `flannel` (default), `calico` or `weave` for cluster pod networking. Choose only one for your cluster; converting between them is not done automatically and could result in broken networking; if you need to switch from one to another, it should be done outside of this role.
+
     kubernetes_apiserver_advertise_address: ''
     kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'
     kubernetes_ignore_preflight_errors: 'all'
 
-Options passed to `kubeadm init` when initializing the Kubernetes master. The `apiserver_advertise_address` defaults to `ansible_default_ipv4.address` if it's left empty.
+Options passed to `kubeadm init` when initializing the Kubernetes master. The `kubernetes_apiserver_advertise_address` defaults to `ansible_default_ipv4.address` if it's left empty.
 
     kubernetes_apt_release_channel: main
     kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-xenial {{ kubernetes_apt_release_channel }}"
@@ -65,8 +83,12 @@ Options passed to `kubeadm init` when initializing the Kubernetes master. The `a
 Apt repository options for Kubernetes installation.
 
     kubernetes_yum_arch: x86_64
+    kubernetes_yum_base_url: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-{{ kubernetes_yum_arch }}"
+    kubernetes_yum_gpg_key:
+      - https://packages.cloud.google.com/yum/doc/yum-key.gpg
+      - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 
-Yum repository options for Kubernetes installation.
+Yum repository options for Kubernetes installation. You can change `kubernete_yum_gpg_key` to a different url if you are behind a firewall or provide a trustworthy mirror. Usually in combination with changing `kubernetes_yum_base_url` as well.
 
     kubernetes_flannel_manifest_file_rbac: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
     kubernetes_flannel_manifest_file: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
@@ -85,7 +107,7 @@ None.
 - hosts: all
 
   vars:
-    kubernetes_allow_pods_on_master: True
+    kubernetes_allow_pods_on_master: true
 
   roles:
     - geerlingguy.docker
@@ -112,7 +134,7 @@ Playbook:
 - hosts: all
 
   vars:
-    kubernetes_allow_pods_on_master: True
+    kubernetes_allow_pods_on_master: true
 
   roles:
     - geerlingguy.docker

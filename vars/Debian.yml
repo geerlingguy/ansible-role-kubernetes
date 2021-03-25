@@ -1,2 +1,3 @@
 ---
+procps_package: procps
 kubelet_environment_file_path: /etc/default/kubelet

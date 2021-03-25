@@ -6,7 +6,7 @@ An Ansible Role that installs [Kubernetes](https://kubernetes.io) on Linux.
 
 ## Requirements
 
-Requires Docker; recommended role for Docker installation: `geerlingguy.docker`.
+Requires Docker or another [Container Runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes) ; recommended role for Docker installation: `geerlingguy.docker`.
 
 ## Role Variables
 
@@ -24,8 +24,8 @@ Available variables are listed below, along with default values (see `defaults/m
 
 Kubernetes packages to be installed on the server. You can either provide a list of package names, or set `name` and `state` to have more control over whether the package is `present`, `absent`, `latest`, etc.
 
-    kubernetes_version: '1.17'
-    kubernetes_version_rhel_package: '1.17.2'
+    kubernetes_version: '1.20'
+    kubernetes_version_rhel_package: '1.20.4'
 
 The minor version of Kubernetes to install. The plain `kubernetes_version` is used to pin an apt package version on Debian, and as the Kubernetes version passed into the `kubeadm init` command (see `kubernetes_version_kubeadm`). The `kubernetes_version_rhel_package` variable must be a specific Kubernetes release, and is used to pin the version on Red Hat / CentOS servers.
 
@@ -33,10 +33,44 @@ The minor version of Kubernetes to install. The plain `kubernetes_version` is us
 
 Whether the particular server will serve as a Kubernetes `master` (default) or `node`. The master will have `kubeadm init` run on it to intialize the entire K8s control plane, while `node`s will have `kubeadm join` run on them to join them to the `master`.
 
+### Variables to configure kubeadm and kubelet with `kubeadm init` through a config file (recommended)
+
+With this role, `kubeadm init` will be run with `--config <FILE>`.
+
+    kubernetes_kubeadm_kubelet_config_file_path: '/etc/kubernetes/kubeadm-kubelet-config.yaml'
+
+Path for `<FILE>`. If the directory does not exist, this role will create it.
+
+The following variables are parsed as options to <FILE>. To understand its syntax, see https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration and https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-init/#config-file . The skeleton (`apiVersion`, `kind`) of the config file will be created by this role, so do not define them within the variables. (See `templates/kubeadm-kubelet-config.yaml`).
+
+    kubernetes_config_init_configuration:
+      localAPIEndpoint:
+        advertiseAddress: "{{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}"
+
+Defines the options under `kind: InitConfiguration`. Including `kubernetes_apiserver_advertise_address` here is for backward-compatibilty to older versions of this role, where `kubernetes_apiserver_advertise_address` was used with a command-line-option.
+
+    kubernetes_config_cluster_configuration:
+      networking:
+        podSubnet: "{{ kubernetes_pod_network.cidr }}"
+      kubernetesVersion: "{{ kubernetes_version_kubeadm }}"
+
+Options under `kind: ClusterConfiguration`. Including `kubernetes_pod_network.cidr` and `kubernetes_version_kubeadm` here are for backward-compatibilty to older versions of this role, where they were used with command-line-options.
+
+    kubernetes_config_kubelet_configuration:
+      cgroupDriver: cgroupfs
+
+Options to configure kubelet on any nodes in your cluster through the `kubeadm init` process. To get the syntax of this options see https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file and https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration.
+
+NOTE: This is the recommended way to do the kubelet-configuration. Most command-line-options are deprecated.
+
+NOTE: The recommended cgroupDriver depends on your [Container Runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes). When using this role with containerd instead of docker, this value should be changed to `systemd`.
+
+### Variables to configure kubeadm and kubelet through command-line-options
+
     kubernetes_kubelet_extra_args: ""
     kubernetes_kubelet_extra_args_config_file: /etc/default/kubelet
 
-Extra args to pass to `kubelet` during startup. E.g. to allow `kubelet` to start up even if there is swap is enabled on your server, set this to: `"--fail-swap-on=false"`. Or to specify the node-ip advertised by `kubelet`, set this to `"--node-ip={{ ansible_host }}"`.
+Extra args to pass to `kubelet` during startup. E.g. to allow `kubelet` to start up even if there is swap is enabled on your server, set this to: `"--fail-swap-on=false"`. Or to specify the node-ip advertised by `kubelet`, set this to `"--node-ip={{ ansible_host }}"`. *This is deprecated. Please use `kubernetes_config_kubelet_configuration` instead.*
 
     kubernetes_kubeadm_init_extra_opts: ""
 
@@ -45,6 +79,8 @@ Extra args to pass to `kubeadm init` during K8s control plane initialization. E.
     kubernetes_join_command_extra_opts: ""
 
 Extra args to pass to the generated `kubeadm join` command during K8s node initialization. E.g. to ignore certain preflight errors like swap being enabled, set this to: `--ignore-preflight-errors=Swap`
+
+### Other variables to for additinal settings
 
     kubernetes_allow_pods_on_master: true
 

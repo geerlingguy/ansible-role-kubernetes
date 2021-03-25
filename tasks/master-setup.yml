@@ -1,14 +1,30 @@
 ---
-- name: Initialize Kubernetes master with kubeadm init.
+- name: Create the directory for the kubernetes_config_file
+  file:
+    path: "{{ kubernetes_kubeadm_kubelet_config_file_path | dirname }}"
+    state: directory
+
+- name: Deploy the config-file for kubeadm and kubelet
+  template:
+    src: "kubeadm-kubelet-config.yaml"
+    dest: "{{ kubernetes_kubeadm_kubelet_config_file_path }}"
+
+- name: Initialize Kubernetes master with kubeadm init
   command: >
     kubeadm init
-    --pod-network-cidr={{ kubernetes_pod_network.cidr }}
-    --apiserver-advertise-address={{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}
-    --kubernetes-version {{ kubernetes_version_kubeadm }}
+    --config {{ kubernetes_kubeadm_kubelet_config_file_path }}
+    {{ kubernetes_kubeadm_init_extra_opts }}
+  register: kubeadmin_init
+  when: (not kubernetes_init_stat.stat.exists) and (kubernetes_ignore_preflight_errors is not defined)
+
+- name: Initialize Kubernetes master with kubeadm init and ignore_preflight_errors
+  command: >
+    kubeadm init
+    --config {{ kubernetes_kubeadm_kubelet_config_file_path }}
     --ignore-preflight-errors={{ kubernetes_ignore_preflight_errors }}
     {{ kubernetes_kubeadm_init_extra_opts }}
   register: kubeadmin_init
-  when: not kubernetes_init_stat.stat.exists
+  when: (not kubernetes_init_stat.stat.exists) and (kubernetes_ignore_preflight_errors is defined)
 
 - name: Print the init output to screen.
   debug:

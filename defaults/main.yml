@@ -9,15 +9,16 @@ kubernetes_packages:
   - name: kubernetes-cni
     state: present
 
-kubernetes_version: '1.19'
-kubernetes_version_rhel_package: '1.19.0'
+kubernetes_version: '1.20'
+kubernetes_version_rhel_package: '1.20.4'
 
 kubernetes_role: master
 
+# This is deprecated. Please use kubernetes_config_kubelet_configuration instead.
 kubernetes_kubelet_extra_args: ""
+
 kubernetes_kubeadm_init_extra_opts: ""
 kubernetes_join_command_extra_opts: ""
-
 kubernetes_allow_pods_on_master: true
 kubernetes_enable_web_ui: true
 kubernetes_web_ui_manifest_file: https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
@@ -29,6 +30,23 @@ kubernetes_pod_network:
   # Calico CNI.
   # cni: 'calico'
   # cidr: '192.168.0.0/16'
+
+kubernetes_kubeadm_kubelet_config_file_path: '/etc/kubernetes/kubeadm-kubelet-config.yaml'
+kubernetes_config_kubelet_configuration:
+  cgroupDriver: "cgroupfs"
+
+kubernetes_config_init_configuration:
+  localAPIEndpoint:
+    advertiseAddress: "{{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}"
+# if you use the next lines, remove the command line argument below
+# nodeRegistration:
+#    ignorePreflightErrors:
+#      - all
+
+kubernetes_config_cluster_configuration:
+  networking:
+    podSubnet: "{{ kubernetes_pod_network.cidr }}"
+  kubernetesVersion: "{{ kubernetes_version_kubeadm }}"
 
 kubernetes_apiserver_advertise_address: ''
 kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'

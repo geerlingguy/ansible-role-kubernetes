@@ -80,7 +80,7 @@ Extra args to pass to `kubeadm init` during K8s control plane initialization. E.
 
 Extra args to pass to the generated `kubeadm join` command during K8s node initialization. E.g. to ignore certain preflight errors like swap being enabled, set this to: `--ignore-preflight-errors=Swap`
 
-### Other variables to for additinal settings
+### Additional variables
 
     kubernetes_allow_pods_on_master: true
 

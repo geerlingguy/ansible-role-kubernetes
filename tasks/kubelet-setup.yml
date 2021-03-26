@@ -1,7 +1,9 @@
+---
+
 # ---- DEPRECATED ----------------
 #
 # Most of the kubernetes_kubelet_extra_args are deprecated. See https://kubernetes.io/docs/reference/command-line-tools-reference/kubelet for details.
-# Use the kubernetes_kubelet_config variable instead, which will be used to create the kubelet config file https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file/
+# Use the kubernetes_kubelet_config variable instead, which will be used to create the kubelet config file.
 
 - name: Check for existence of kubelet environment file. (deprecated)
   stat:
@@ -30,7 +32,7 @@
     state: present
     mode: 0644
   register: kubelet_extra_args
-  when:  kubernetes_kubelet_extra_args|length > 0
+  when: kubernetes_kubelet_extra_args|length > 0
 
 - name: Reload systemd unit if args were changed. (deprecated)
   systemd:

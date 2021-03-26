@@ -29,19 +29,26 @@
     state: link
     mode: 0644
 
-- name: Configure Flannel networking.
+- name: Configure Flannel rbac.
   command: "{{ item }}"
   with_items:
     - kubectl apply -f {{ kubernetes_flannel_manifest_file_rbac }}
-    - kubectl apply -f {{ kubernetes_flannel_manifest_file }}
+  register: flannel_result
+  changed_when: "'created' in flannel_result.stdout"
+  when: kubernetes_pod_network.cni == 'flannel'
+
+- name: Configure Flannel networking.
+  shell:
+    warn: false
+    cmd: curl {{ kubernetes_flannel_manifest_file }} | sed "s;10.244.0.0/16;{{ kubernetes_pod_network.cidr }};g" | kubectl apply -f -
   register: flannel_result
   changed_when: "'created' in flannel_result.stdout"
   when: kubernetes_pod_network.cni == 'flannel'
 
 - name: Configure Calico networking.
-  command: "{{ item }}"
-  with_items:
-    - kubectl apply -f {{ kubernetes_calico_manifest_file }}
+  shell:
+    warn: false
+    cmd: curl {{ kubernetes_calico_manifest_file }} | sed "s;192.168.0.0/16;{{ kubernetes_pod_network.cidr }};g" | kubectl apply -f -
   register: calico_result
   changed_when: "'created' in calico_result.stdout"
   when: kubernetes_pod_network.cni == 'calico'
@@ -55,7 +62,8 @@
 - name: Configure Weave networking.
   command: "{{ item }}"
   with_items:
-    - "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version={{ kubectl_version.stdout_lines[0] }}"
+    - "kubectl apply -f
+        https://cloud.weave.works/k8s/net?k8s-version={{ kubectl_version.stdout_lines[0] }}&env.IPALLOC_RANGE={{ kubernetes_pod_network.cidr }}"
   register: weave_result
   changed_when: "'created' in weave_result.stdout"
   when: kubernetes_pod_network.cni == 'weave'

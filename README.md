@@ -88,7 +88,7 @@ Apt repository options for Kubernetes installation.
       - https://packages.cloud.google.com/yum/doc/yum-key.gpg
       - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
     kubernetes_gpg_check: true
-    kubernetes_repo_gpg_check: true
+    kubernetes_repo_gpg_check: false
 
 Yum repository options for Kubernetes installation. You can change `kubernete_yum_gpg_key` to a different url if you are behind a firewall or provide a trustworthy mirror. Usually in combination with changing `kubernetes_yum_base_url` as well.
 

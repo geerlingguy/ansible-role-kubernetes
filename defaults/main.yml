@@ -45,7 +45,7 @@ kubernetes_yum_gpg_key:
   - https://packages.cloud.google.com/yum/doc/yum-key.gpg
   - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 kubernetes_gpg_check: true
-kubernetes_repo_gpg_check: true
+kubernetes_repo_gpg_check: false
 
 # Flannel config files.
 kubernetes_flannel_manifest_file_rbac: https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml

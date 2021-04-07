@@ -6,7 +6,7 @@
 
 - name: Deploy the config-file for kubeadm and kubelet
   template:
-    src: "kubeadm-kubelet-config.yaml"
+    src: "kubeadm-kubelet-config.j2"
     dest: "{{ kubernetes_kubeadm_kubelet_config_file_path }}"
 
 - name: Initialize Kubernetes master with kubeadm init

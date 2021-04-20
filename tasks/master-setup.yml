@@ -60,6 +60,39 @@
   changed_when: "'created' in weave_result.stdout"
   when: kubernetes_pod_network.cni == 'weave'
 
+- name: Create temporary directory for Cilium kustomization.
+  tempfile:
+    state: directory
+    prefix: "cilium-kustomize."
+  register: cilium_kustomize_dir
+  when: kubernetes_pod_network.cni == 'cilium'
+
+- name: Get cilium manifest.
+  get_url:
+    url: "{{ kubernetes_cilium_manifest_file }}"
+    dest: "{{ cilium_kustomize_dir.path }}/cilium.yaml"
+  when: kubernetes_pod_network.cni == 'cilium'
+
+- name: Add cilium kustomization.yaml.
+  template:
+    src: "cilium-kustomization.yaml"
+    dest: "{{ cilium_kustomize_dir.path }}/kustomization.yaml"
+  when: kubernetes_pod_network.cni == 'cilium'
+
+- name: Add cilium patch.yaml.
+  template:
+    src: "cilium-patch.yaml"
+    dest: "{{ cilium_kustomize_dir.path }}/patch.yaml"
+  when: kubernetes_pod_network.cni == 'cilium'
+
+- name: Configure Cilium networking.
+  command: "{{ item }}"
+  with_items:
+    - kubectl apply -k {{ cilium_kustomize_dir.path }}
+  register: cilium_result
+  changed_when: "'created' in cilium_result.stdout"
+  when: kubernetes_pod_network.cni == 'cilium'
+
 # TODO: Check if taint exists with something like `kubectl describe nodes`
 # instead of using kubernetes_init_stat.stat.exists check.
 - name: Allow pods on master node (if configured).

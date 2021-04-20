@@ -51,3 +51,6 @@ kubernetes_flannel_manifest_file: https://raw.githubusercontent.com/coreos/flann
 
 # Calico config files
 kubernetes_calico_manifest_file: https://docs.projectcalico.org/v3.10/manifests/calico.yaml
+
+# Cilium config files
+kubernetes_cilium_manifest_file: https://raw.githubusercontent.com/cilium/cilium/v1.9/install/kubernetes/quick-install.yaml

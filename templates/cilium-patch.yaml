@@ -1,0 +1,3 @@
+- op: replace
+  path: /data/cluster-pool-ipv4-cidr
+  value: "{{ kubernetes_pod_network.cidr }}"

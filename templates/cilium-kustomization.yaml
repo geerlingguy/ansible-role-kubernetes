@@ -1,9 +1,10 @@
+---
 resources:
-- cilium.yaml
+  - cilium.yaml
 
 patchesJson6902:
-- path: patch.yaml
-  target:
-    version: v1
-    kind: ConfigMap
-    name: cilium-config
+  - path: patch.yaml
+    target:
+      version: v1
+      kind: ConfigMap
+      name: cilium-config

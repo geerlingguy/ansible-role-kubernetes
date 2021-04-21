@@ -8,14 +8,41 @@
     or ansible_distribution_major_version | int < 10
 
 # See: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
-- name: Let iptables see bridged traffic.
-  sysctl:
-    name: "{{ item }}"
-    value: '1'
-    state: present
-  loop:
-    - net.bridge.bridge-nf-call-iptables
-    - net.bridge.bridge-nf-call-ip6tables
+- name: Load br_netfilter module with every system start
+  lineinfile:
+    line: br_netfilter
+    path: /etc/modules-load.d/k8s.conf
+    create: yes
   when: >
     ansible_distribution != 'Debian'
     or ansible_distribution_major_version | int < 10
+    
+- name: Load br_netfilter module instantly
+  modprobe:
+    name: br_netfilter
+    state: present
+  when: >
+    ansible_distribution != 'Debian'
+    or ansible_distribution_major_version | int < 10
+
+- name: Let iptables see bridged traffic.
+  lineinfile:
+    line: "{{ item }}"
+    path: /etc/sysctl.d/k8s.conf
+    create: yes
+  loop:
+    - 'net.bridge.bridge-nf-call-ip6tables = 1'
+    - 'net.bridge.bridge-nf-call-iptables = 1'
+    - 'net.ipv4.ip_forward = 1'
+  when: >
+    ansible_distribution != 'Debian'
+    or ansible_distribution_major_version | int < 10
+  register: sysctld
+
+- name: reload the sysctl parameters
+  command: sysctl --system
+  when: sysctld.changed
+  when: >
+    ansible_distribution != 'Debian'
+    or ansible_distribution_major_version | int < 10
+

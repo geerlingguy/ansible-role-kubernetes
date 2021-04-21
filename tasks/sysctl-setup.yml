@@ -41,7 +41,7 @@
 
 - name: reload the sysctl parameters
   command: sysctl --system
-  when: sysctld.changed
   when: >
-    ansible_distribution != 'Debian'
-    or ansible_distribution_major_version | int < 10
+    (ansible_distribution != 'Debian'
+    or ansible_distribution_major_version | int < 10)
+    and sysctld.changed

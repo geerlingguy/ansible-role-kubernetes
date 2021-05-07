@@ -1,0 +1,14 @@
+---
+apiVersion: kubeadm.k8s.io/v1beta2
+kind: InitConfiguration
+{{ kubernetes_config_init_configuration | to_nice_yaml }}
+---
+kind: ClusterConfiguration
+apiVersion: kubeadm.k8s.io/v1beta2
+{{ kubernetes_config_cluster_configuration | to_nice_yaml }}
+---
+{% if kubernetes_config_kubelet_configuration|length > 0 %}
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+{{ kubernetes_config_kubelet_configuration | to_nice_yaml }}
+{% endif %}

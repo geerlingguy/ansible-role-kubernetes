@@ -21,8 +21,8 @@ kubernetes_kubeadm_init_extra_opts: ""
 kubernetes_join_command_extra_opts: ""
 kubernetes_allow_pods_on_master: true
 kubernetes_enable_web_ui: true
-kubernetes_web_ui_manifest_file: https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml
-
+# https://github.com/kubernetes/dashboard/blob/master/docs/user/installation.md
+kubernetes_web_ui_manifest_file: https://raw.githubusercontent.com/kubernetes/dashboard/v2.2.0/aio/deploy/recommended.yaml
 kubernetes_pod_network:
   # Flannel CNI.
   cni: 'flannel'

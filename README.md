@@ -29,9 +29,9 @@ Kubernetes packages to be installed on the server. You can either provide a list
 
 The minor version of Kubernetes to install. The plain `kubernetes_version` is used to pin an apt package version on Debian, and as the Kubernetes version passed into the `kubeadm init` command (see `kubernetes_version_kubeadm`). The `kubernetes_version_rhel_package` variable must be a specific Kubernetes release, and is used to pin the version on Red Hat / CentOS servers.
 
-    kubernetes_role: master
+    kubernetes_role: control_plane
 
-Whether the particular server will serve as a Kubernetes `master` (default) or `node`. The master will have `kubeadm init` run on it to intialize the entire K8s control plane, while `node`s will have `kubeadm join` run on them to join them to the `master`.
+Whether the particular server will serve as a Kubernetes `control plane` (default) or `node`. The node with `kubernetes_role: control_plane` will have `kubeadm init` run on it to intialize the entire K8s control plane, while `node`s will have `kubeadm join` run on them to join them to the initial node.
 
 ### Variables to configure kubeadm and kubelet with `kubeadm init` through a config file (recommended)
 
@@ -82,14 +82,14 @@ Extra args to pass to the generated `kubeadm join` command during K8s node initi
 
 ### Additional variables
 
-    kubernetes_allow_pods_on_master: true
+    kubernetes_allow_pods_on_control_plane: true
 
-Whether to remove the taint that denies pods from being deployed to the Kubernetes master. If you have a single-node cluster, this should definitely be `True`. Otherwise, set to `False` if you want a dedicated Kubernetes master which doesn't run any other pods.
+Whether to remove the taint that denies pods from being deployed to the Kubernetes control plane. If you have a single-node cluster, this should definitely be `True`. Otherwise, set to `False` if you want a dedicated Kubernetes control plane which doesn't run any other pods.
 
     kubernetes_enable_web_ui: false
     kubernetes_web_ui_manifest_file: https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
 
-Whether to enable the Kubernetes web dashboard UI (only accessible on the master itself, or proxied), and the file containing the web dashboard UI manifest.
+Whether to enable the Kubernetes web dashboard UI (only accessible on the control plane itself, or proxied), and the file containing the web dashboard UI manifest.
 
     kubernetes_pod_network:
       # Flannel CNI.
@@ -110,7 +110,7 @@ This role currently supports `flannel` (default), `calico` or `weave` for cluste
     kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'
     kubernetes_ignore_preflight_errors: 'all'
 
-Options passed to `kubeadm init` when initializing the Kubernetes master. The `kubernetes_apiserver_advertise_address` defaults to `ansible_default_ipv4.address` if it's left empty.
+Options passed to `kubeadm init` when initializing the Kubernetes control plane. The `kubernetes_apiserver_advertise_address` defaults to `ansible_default_ipv4.address` if it's left empty.
 
     kubernetes_apt_release_channel: main
     kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-xenial {{ kubernetes_apt_release_channel }}"
@@ -137,25 +137,25 @@ None.
 
 ## Example Playbooks
 
-### Single node (master-only) cluster
+### Single node (control-plane-only) cluster
 
 ```yaml
 - hosts: all
 
   vars:
-    kubernetes_allow_pods_on_master: true
+    kubernetes_allow_pods_on_control_plane: true
 
   roles:
     - geerlingguy.docker
     - geerlingguy.kubernetes
 ```
 
-### Two or more nodes (single master) cluster
+### Two or more nodes (single control plane) cluster
 
 Master inventory vars:
 
 ```yaml
-kubernetes_role: "master"
+kubernetes_role: "control_plane"
 ```
 
 Node(s) inventory vars:
@@ -170,14 +170,14 @@ Playbook:
 - hosts: all
 
   vars:
-    kubernetes_allow_pods_on_master: true
+    kubernetes_allow_pods_on_control_plane: true
 
   roles:
     - geerlingguy.docker
     - geerlingguy.kubernetes
 ```
 
-Then, log into the Kubernetes master, and run `kubectl get nodes` as root, and you should see a list of all the servers.
+Then, log into the Kubernetes control plane, and run `kubectl get nodes` as root, and you should see a list of all the servers.
 
 ## License
 

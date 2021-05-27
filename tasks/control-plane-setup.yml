@@ -9,7 +9,7 @@
     src: "kubeadm-kubelet-config.j2"
     dest: "{{ kubernetes_kubeadm_kubelet_config_file_path }}"
 
-- name: Initialize Kubernetes master with kubeadm init
+- name: Initialize Kubernetes control plane with kubeadm init
   command: >
     kubeadm init
     --config {{ kubernetes_kubeadm_kubelet_config_file_path }}
@@ -17,7 +17,7 @@
   register: kubeadmin_init
   when: (not kubernetes_init_stat.stat.exists) and (kubernetes_ignore_preflight_errors is not defined)
 
-- name: Initialize Kubernetes master with kubeadm init and ignore_preflight_errors
+- name: Initialize Kubernetes control plane with kubeadm init and ignore_preflight_errors
   command: >
     kubeadm init
     --config {{ kubernetes_kubeadm_kubelet_config_file_path }}
@@ -78,10 +78,10 @@
 
 # TODO: Check if taint exists with something like `kubectl describe nodes`
 # instead of using kubernetes_init_stat.stat.exists check.
-- name: Allow pods on master node (if configured).
+- name: Allow pods on control plane node (if configured).
   command: "kubectl taint nodes --all node-role.kubernetes.io/master-"
   when:
-    - kubernetes_allow_pods_on_master | bool
+    - kubernetes_allow_pods_on_control_plane | bool
     - not kubernetes_init_stat.stat.exists
 
 - name: Check if Kubernetes Dashboard UI service already exists.

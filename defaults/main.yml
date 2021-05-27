@@ -12,14 +12,14 @@ kubernetes_packages:
 kubernetes_version: '1.20'
 kubernetes_version_rhel_package: '1.20.4'
 
-kubernetes_role: master
+kubernetes_role: control_plane
 
 # This is deprecated. Please use kubernetes_config_kubelet_configuration instead.
 kubernetes_kubelet_extra_args: ""
 
 kubernetes_kubeadm_init_extra_opts: ""
 kubernetes_join_command_extra_opts: ""
-kubernetes_allow_pods_on_master: true
+kubernetes_allow_pods_on_control_plane: true
 kubernetes_enable_web_ui: true
 # https://github.com/kubernetes/dashboard/blob/master/docs/user/installation.md
 kubernetes_web_ui_manifest_file: https://raw.githubusercontent.com/kubernetes/dashboard/v2.2.0/aio/deploy/recommended.yaml

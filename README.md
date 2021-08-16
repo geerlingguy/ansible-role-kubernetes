@@ -67,7 +67,7 @@ NOTE: The recommended cgroupDriver depends on your [Container Runtime](https://k
 
     kubernetes_config_kube_proxy_configuration: {}
 
-Options under `kind: KubeProxyConfiguration`.
+Options to configure kubelet's proxy configuration in the `KubeProxyConfiguration` section of the kubelet configuration.
 
 ### Variables to configure kubeadm and kubelet through command-line-options
 

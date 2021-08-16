@@ -65,6 +65,10 @@ NOTE: This is the recommended way to do the kubelet-configuration. Most command-
 
 NOTE: The recommended cgroupDriver depends on your [Container Runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes). When using this role with containerd instead of docker, this value should be changed to `systemd`.
 
+    kubernetes_config_kube_proxy_configuration: {}
+
+Options under `kind: KubeProxyConfiguration`.
+
 ### Variables to configure kubeadm and kubelet through command-line-options
 
     kubernetes_kubelet_extra_args: ""

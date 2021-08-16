@@ -48,6 +48,8 @@ kubernetes_config_cluster_configuration:
     podSubnet: "{{ kubernetes_pod_network.cidr }}"
   kubernetesVersion: "{{ kubernetes_version_kubeadm }}"
 
+kubernetes_config_kube_proxy_configuration: {}
+
 kubernetes_apiserver_advertise_address: ''
 kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'
 kubernetes_ignore_preflight_errors: 'all'

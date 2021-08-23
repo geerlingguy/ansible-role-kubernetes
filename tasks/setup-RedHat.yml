@@ -4,8 +4,8 @@
     name: kubernetes
     description: Kubernetes
     enabled: true
-    gpgcheck: true
-    repo_gpgcheck: true
+    gpgcheck: "{{ kubernetes_yum_gpg_check }}"
+    repo_gpgcheck: "{{ kubernetes_yum_repo_gpg_check }}"
     baseurl: "{{ kubernetes_yum_base_url }}"
     gpgkey: "{{ kubernetes_yum_gpg_key }}"
 

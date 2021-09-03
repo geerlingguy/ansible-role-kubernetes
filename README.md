@@ -41,7 +41,7 @@ With this role, `kubeadm init` will be run with `--config <FILE>`.
 
 Path for `<FILE>`. If the directory does not exist, this role will create it.
 
-The following variables are parsed as options to <FILE>. To understand its syntax, see https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration and https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-init/#config-file . The skeleton (`apiVersion`, `kind`) of the config file will be created by this role, so do not define them within the variables. (See `templates/kubeadm-kubelet-config.yaml`).
+The following variables are parsed as options to <FILE>. To understand its syntax, see https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration and https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-init/#config-file . The skeleton (`apiVersion`, `kind`) of the config file will be created by this role, so do not define them within the variables. (See `templates/kubeadm-kubelet-config.j2`).
 
     kubernetes_config_init_configuration:
       localAPIEndpoint:

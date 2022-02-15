@@ -34,15 +34,19 @@
 
 - name: Ensure .kube directory exists.
   file:
-    path: ~/.kube
+    path: "/home/{{ kubernetes_kubeconfig_user }}/.kube"
     state: directory
+    owner: "{{ kubernetes_kubeconfig_user }}"
+    group: "{{ kubernetes_kubeconfig_user }}"
     mode: 0755
 
 - name: Symlink the kubectl admin.conf to ~/.kube/conf.
   file:
     src: /etc/kubernetes/admin.conf
-    dest: ~/.kube/config
+    dest: "/home/{{ kubernetes_kubeconfig_user }}/.kube/config"
     state: link
+    owner: "{{ kubernetes_kubeconfig_user }}"
+    group: "{{ kubernetes_kubeconfig_user }}"
     mode: 0644
 
 - name: Configure Flannel networking.

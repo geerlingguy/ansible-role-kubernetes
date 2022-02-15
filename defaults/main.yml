@@ -9,6 +9,8 @@ kubernetes_packages:
   - name: kubernetes-cni
     state: present
 
+kubernetes_kubeconfig_user: "{{ ansible_user_id }}"
+
 kubernetes_version: '1.20'
 kubernetes_version_rhel_package: '1.20.4'
 

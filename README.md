@@ -90,6 +90,10 @@ Extra args to pass to the generated `kubeadm join` command during K8s node initi
 
 Whether to remove the taint that denies pods from being deployed to the Kubernetes master. If you have a single-node cluster, this should definitely be `True`. Otherwise, set to `False` if you want a dedicated Kubernetes master which doesn't run any other pods.
 
+    kubernetes_kubeconfig_user: "{{ ansible_user_id }}"
+
+User that should get the kubeconfig file linked into `.kube` in `/home`.
+
     kubernetes_pod_network:
       # Flannel CNI.
       cni: 'flannel'

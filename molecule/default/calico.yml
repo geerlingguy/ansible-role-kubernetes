@@ -14,7 +14,7 @@
       --cgroup-driver=systemd
       --cgroups-per-qos=false
       --enforce-node-allocatable=""
-    docker_install_compose: false
+    containerd_config_cgroup_driver_systemd: true
 
   pre_tasks:
     - name: Update apt cache.

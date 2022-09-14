@@ -34,15 +34,15 @@
     path: /etc/kubernetes/admin.conf
   register: kubernetes_init_stat
 
-# Set up master.
-- include_tasks: master-setup.yml
-  when: kubernetes_role == 'master'
+# Set up control plane.
+- include_tasks: control-plane-setup.yml
+  when: kubernetes_role == 'control_plane'
 
 # Set up nodes.
-- name: Get the kubeadm join command from the Kubernetes master.
+- name: Get the kubeadm join command from the Kubernetes control plane.
   command: kubeadm token create --print-join-command
   changed_when: false
-  when: kubernetes_role == 'master'
+  when: kubernetes_role == 'control_plane'
   register: kubernetes_join_command_result
 
 - name: Set the kubeadm join command globally.

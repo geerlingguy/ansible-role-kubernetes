@@ -9,7 +9,11 @@
       cidr: '192.168.0.0/16'
 
     # Allow swap in test environments (hard to control in some envs).
-    kubernetes_kubelet_extra_args: "--fail-swap-on=false --cgroup-driver=systemd"
+    kubernetes_kubelet_extra_args: >-
+      --fail-swap-on=false
+      --cgroup-driver=systemd
+      --cgroups-per-qos=false
+      --enforce-node-allocatable=""
     docker_install_compose: false
 
   pre_tasks:

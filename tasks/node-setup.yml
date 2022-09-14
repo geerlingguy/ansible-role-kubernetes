@@ -1,5 +1,5 @@
 ---
-- name: Join node to Kubernetes master
+- name: Join node to Kubernetes control plane.
   shell: >
     {{ kubernetes_join_command }}
     creates=/etc/kubernetes/kubelet.conf

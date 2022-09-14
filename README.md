@@ -6,7 +6,7 @@ An Ansible Role that installs [Kubernetes](https://kubernetes.io) on Linux.
 
 ## Requirements
 
-Requires Docker or another [Container Runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes) ; recommended role for Docker installation: `geerlingguy.docker`.
+Requires a compatible [Container Runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes); recommended role for CRI installation: `geerlingguy.containerd`.
 
 ## Role Variables
 
@@ -70,14 +70,14 @@ Options under `kind: ClusterConfiguration`. Including `kubernetes_pod_network.ci
 
 ```yaml
 kubernetes_config_kubelet_configuration:
-  cgroupDriver: cgroupfs
+  cgroupDriver: systemd
 ```
 
 Options to configure kubelet on any nodes in your cluster through the `kubeadm init` process. To get the syntax of this options see https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file and https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration.
 
 NOTE: This is the recommended way to do the kubelet-configuration. Most command-line-options are deprecated.
 
-NOTE: The recommended cgroupDriver depends on your [Container Runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes). When using this role with containerd instead of docker, this value should be changed to `systemd`.
+NOTE: The recommended cgroupDriver depends on your [Container Runtime](https://kubernetes.io/docs/setup/production-environment/container-runtimes). When using this role with Docker instead of containerd, this value should be changed to `cgroupfs`.
 
 ```yaml
 kubernetes_config_kube_proxy_configuration: {}

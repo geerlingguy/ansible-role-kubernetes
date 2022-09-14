@@ -4,8 +4,8 @@
   become: true
 
   vars:
-    # Allow swap in test environments (hard to control in some Docker envs).
-    kubernetes_kubelet_extra_args: "--fail-swap-on=false --cgroup-driver=cgroupfs"
+    # Allow swap in test environments (hard to control in some envs).
+    kubernetes_kubelet_extra_args: "--fail-swap-on=false --cgroup-driver=systemd"
     docker_install_compose: false
 
   pre_tasks:
@@ -25,7 +25,7 @@
       action: setup
 
   roles:
-    - role: geerlingguy.docker
+    - role: geerlingguy.containerd
     - role: geerlingguy.kubernetes
 
   post_tasks:

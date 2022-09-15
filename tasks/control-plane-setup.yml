@@ -25,6 +25,21 @@
     {{ kubernetes_kubeadm_init_extra_opts }}
   register: kubeadmin_init
   when: (not kubernetes_init_stat.stat.exists) and (kubernetes_ignore_preflight_errors is defined)
+  failed_when: false  # DELETEME START ---
+- name: Test
+  command: systemctl status kubelet
+  register: systemctl_result
+
+- debug: var=systemctl_result
+
+- name: Test 2
+  command: journalctl --no-pager -xeu kubelet
+  register: journalctl_result
+
+- debug: var=journalctl_result
+
+- fail:
+# DELETEME END ---
 
 - name: Print the init output to screen.
   debug:

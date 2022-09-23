@@ -76,10 +76,24 @@
   changed_when: "'created' in weave_result.stdout"
   when: kubernetes_pod_network.cni == 'weave'
 
-# TODO: Check if taint exists with something like `kubectl describe nodes`
-# instead of using kubernetes_init_stat.stat.exists check.
-- name: Allow pods on master node (if configured).
-  command: "kubectl taint nodes --all node-role.kubernetes.io/master-"
+# Check if a Taint exists
+- name: Check if taint exists preventing pods to be scheduled on the master node
+  shell: |
+    set -o pipefail
+    kubectl describe nodes | grep Taints | grep --invert-match \<none\>  | sed -r 's/Taints:\s+(.*:NoSchedule)/\1/'
+  args:
+    executable: /bin/bash
+  register: kube_taint
+  # grep will exit with 1 when no results found.
+  # This causes the task not to halt play.
+  ignore_errors: true
+  changed_when: false
   when:
     - kubernetes_allow_pods_on_master | bool
-    - not kubernetes_init_stat.stat.exists
+
+# Untaint node depending on previous result
+- name: Allow pods on master node (if configured).
+  command: "kubectl taint nodes --all {{ kube_taint.stdout }}-"
+  when:
+    - kubernetes_allow_pods_on_master | bool
+    - not kube_taint.failed

@@ -29,7 +29,7 @@
 
 # TODO REMOVE
 - name: Print kubeadm init output
-  debug: var=kubeadmin_init.stdout
+  debug: var=kubeadmin_init
 
 # TODO REMOVE
 - name: Get kubelet status
@@ -39,7 +39,7 @@
 
 # TODO REMOVE
 - name: Print kubelet status
-  debug: var=journalctl.stdout
+  debug: var=journalctl
 
 - name: Print the init output to screen.
   debug:

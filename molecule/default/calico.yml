@@ -12,8 +12,8 @@
     kubernetes_config_kubelet_configuration:
       cgroupDriver: "systemd"
       failSwapOn: false
-      cgroupsPerQOS: false
-      enforceNodeAllocatable: ""
+      cgroupsPerQOS: true
+      enforceNodeAllocatable: ['pods']
     containerd_config_cgroup_driver_systemd: true
 
   pre_tasks:

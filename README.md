@@ -49,7 +49,7 @@ kubernetes_kubeadm_kubelet_config_file_path: '/etc/kubernetes/kubeadm-kubelet-co
 
 Path for `<FILE>`. If the directory does not exist, this role will create it.
 
-The following variables are parsed as options to <FILE>. To understand its syntax, see https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration and https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-init/#config-file . The skeleton (`apiVersion`, `kind`) of the config file will be created by this role, so do not define them within the variables. (See `templates/kubeadm-kubelet-config.j2`).
+The following variables are parsed as options to <FILE>. To understand its syntax, see [kubelet-integration](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration) and [kubeadm-config-file](https://kubernetes.io/docs/reference/setup-tools/kubeadm/kubeadm-init/#config-file) . The skeleton (`apiVersion`, `kind`) of the config file will be created by this role, so do not define them within the variables. (See `templates/kubeadm-kubelet-config.j2`).
 
 ```yaml
 kubernetes_config_init_configuration:

@@ -9,7 +9,7 @@
     src: "kubeadm-kubelet-config.j2"
     dest: "{{ kubernetes_kubeadm_kubelet_config_file_path }}"
 
-- name: Initialize Kubernetes master with kubeadm init
+- name: Initialize Kubernetes control plane with kubeadm init
   command: >
     kubeadm init
     --config {{ kubernetes_kubeadm_kubelet_config_file_path }}
@@ -17,14 +17,29 @@
   register: kubeadmin_init
   when: (not kubernetes_init_stat.stat.exists) and (kubernetes_ignore_preflight_errors is not defined)
 
-- name: Initialize Kubernetes master with kubeadm init and ignore_preflight_errors
+- name: Initialize Kubernetes control plane with kubeadm init and ignore_preflight_errors
   command: >
     kubeadm init
     --config {{ kubernetes_kubeadm_kubelet_config_file_path }}
     --ignore-preflight-errors={{ kubernetes_ignore_preflight_errors }}
     {{ kubernetes_kubeadm_init_extra_opts }}
   register: kubeadmin_init
+  failed_when: false  # TODO REMOVE
   when: (not kubernetes_init_stat.stat.exists) and (kubernetes_ignore_preflight_errors is defined)
+
+# TODO REMOVE
+- name: Print kubeadm init output
+  debug: var=kubeadmin_init
+
+# TODO REMOVE
+- name: Get kubelet status
+  command: journalctl --no-pager -xeu kubelet
+  register: journalctl
+  changed_when: false
+
+# TODO REMOVE
+- name: Print kubelet status
+  debug: var=journalctl
 
 - name: Print the init output to screen.
   debug:
@@ -73,8 +88,8 @@
 
 # TODO: Check if taint exists with something like `kubectl describe nodes`
 # instead of using kubernetes_init_stat.stat.exists check.
-- name: Allow pods on master node (if configured).
-  command: "kubectl taint nodes --all node-role.kubernetes.io/master-"
+- name: Allow pods on control plane (if configured).
+  command: "kubectl taint nodes --all node-role.kubernetes.io/control-plane-"
   when:
-    - kubernetes_allow_pods_on_master | bool
+    - kubernetes_allow_pods_on_control_plane | bool
     - not kubernetes_init_stat.stat.exists

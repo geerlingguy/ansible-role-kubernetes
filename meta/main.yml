@@ -7,12 +7,13 @@ galaxy_info:
   description: Kubernetes for Linux.
   company: "Midwestern Mac, LLC"
   license: "license (BSD, MIT)"
-  min_ansible_version: 2.4
+  min_ansible_version: 2.10
   platforms:
     - name: EL
       versions:
         - 7
         - 8
+        - 9
     - name: Debian
       versions:
         - stretch
@@ -23,6 +24,7 @@ galaxy_info:
         - xenial
         - bionic
         - focal
+        - jammy
   galaxy_tags:
     - system
     - containers

@@ -9,17 +9,17 @@ kubernetes_packages:
   - name: kubernetes-cni
     state: present
 
-kubernetes_version: '1.20'
-kubernetes_version_rhel_package: '1.20.4'
+kubernetes_version: '1.25'
+kubernetes_version_rhel_package: '1.25.1'
 
-kubernetes_role: master
+kubernetes_role: control_plane
 
 # This is deprecated. Please use kubernetes_config_kubelet_configuration instead.
 kubernetes_kubelet_extra_args: ""
 
 kubernetes_kubeadm_init_extra_opts: ""
 kubernetes_join_command_extra_opts: ""
-kubernetes_allow_pods_on_master: true
+kubernetes_allow_pods_on_control_plane: true
 kubernetes_pod_network:
   # Flannel CNI.
   cni: 'flannel'
@@ -30,7 +30,7 @@ kubernetes_pod_network:
 
 kubernetes_kubeadm_kubelet_config_file_path: '/etc/kubernetes/kubeadm-kubelet-config.yaml'
 kubernetes_config_kubelet_configuration:
-  cgroupDriver: "cgroupfs"
+  cgroupDriver: "systemd"
 
 kubernetes_config_init_configuration:
   localAPIEndpoint:

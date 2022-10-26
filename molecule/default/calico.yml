@@ -8,9 +8,13 @@
       cni: 'calico'
       cidr: '192.168.0.0/16'
 
-    # Allow swap in test environments (hard to control in some Docker envs).
-    kubernetes_kubelet_extra_args: "--fail-swap-on=false --cgroup-driver=cgroupfs"
-    docker_install_compose: false
+    # Allow swap in test environments (hard to control in some envs).
+    kubernetes_config_kubelet_configuration:
+      cgroupDriver: "systemd"
+      failSwapOn: false
+      cgroupsPerQOS: true
+      enforceNodeAllocatable: ['pods']
+    containerd_config_cgroup_driver_systemd: true
 
   pre_tasks:
     - name: Update apt cache.
@@ -29,7 +33,7 @@
       action: setup
 
   roles:
-    - role: geerlingguy.docker
+    - role: geerlingguy.containerd
     - role: geerlingguy.kubernetes
 
   post_tasks:

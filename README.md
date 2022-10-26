@@ -73,7 +73,7 @@ kubernetes_config_kubelet_configuration:
   cgroupDriver: systemd
 ```
 
-Options to configure kubelet on any nodes in your cluster through the `kubeadm init` process. To get the syntax of this options see https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file and https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration.
+Options to configure kubelet on any nodes in your cluster through the `kubeadm init` process. For syntax options read the [kubelet config file](https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file) and [kubelet integration](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration) documentation.
 
 NOTE: This is the recommended way to do the kubelet-configuration. Most command-line-options are deprecated.
 
@@ -92,7 +92,7 @@ kubernetes_kubelet_extra_args: ""
 kubernetes_kubelet_extra_args_config_file: /etc/default/kubelet
 ```
 
-Extra args to pass to `kubelet` during startup. E.g. to allow `kubelet` to start up even if there is swap is enabled on your server, set this to: `"--fail-swap-on=false"`. Or to specify the node-ip advertised by `kubelet`, set this to `"--node-ip={{ ansible_host }}"`. *This is deprecated. Please use `kubernetes_config_kubelet_configuration` instead.*
+Extra args to pass to `kubelet` during startup. E.g. to allow `kubelet` to start up even if there is swap is enabled on your server, set this to: `"--fail-swap-on=false"`. Or to specify the node-ip advertised by `kubelet`, set this to `"--node-ip={{ ansible_host }}"`. **This option is deprecated. Please use `kubernetes_config_kubelet_configuration` instead.**
 
 ```yaml
 kubernetes_kubeadm_init_extra_opts: ""

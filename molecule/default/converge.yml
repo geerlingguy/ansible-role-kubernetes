@@ -5,11 +5,11 @@
 
   vars:
     # Allow swap in test environments (hard to control in some envs).
-    kubernetes_kubelet_extra_args: >-
-      --fail-swap-on=false
-      --cgroup-driver=systemd
-      --cgroups-per-qos=false
-      --enforce-node-allocatable=""
+    kubernetes_config_kubelet_configuration:
+      cgroupDriver: "systemd"
+      failSwapOn: false
+      cgroupsPerQOS: false
+      enforceNodeAllocatable: ""
     containerd_config_cgroup_driver_systemd: true
 
   pre_tasks:

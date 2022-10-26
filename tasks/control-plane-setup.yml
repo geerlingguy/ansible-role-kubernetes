@@ -24,22 +24,7 @@
     --ignore-preflight-errors={{ kubernetes_ignore_preflight_errors }}
     {{ kubernetes_kubeadm_init_extra_opts }}
   register: kubeadmin_init
-  failed_when: false  # TODO REMOVE
   when: (not kubernetes_init_stat.stat.exists) and (kubernetes_ignore_preflight_errors is defined)
-
-# TODO REMOVE
-- name: Print kubeadm init output
-  debug: var=kubeadmin_init
-
-# TODO REMOVE
-- name: Get kubelet status
-  command: journalctl --no-pager -xeu kubelet
-  register: journalctl
-  changed_when: false
-
-# TODO REMOVE
-- name: Print kubelet status
-  debug: var=journalctl
 
 - name: Print the init output to screen.
   debug:

@@ -57,16 +57,24 @@
   changed_when: "'created' in calico_result.stdout"
   when: kubernetes_pod_network.cni == 'calico'
 
-- name: Get Kubernetes version for Weave installation.
-  shell: kubectl version | base64 | tr -d '\n'
-  changed_when: false
-  register: kubectl_version
+- name: Create weave secret.
+  command: "{{ item }}"
+  with_items:
+    - "kubectl create secret -n kube-system generic weave-passwd --from-literal=weave-passwd={{ kubernetes_pod_network.weavepasswd }}"
+  register: weave_secret_result
+  changed_when: "'created' in weave_secret_result.stdout"
   when: kubernetes_pod_network.cni == 'weave'
+
+- name: Add weave configuration file.
+  template:
+    src: weave-daemonset-k8s.yaml.j2
+    dest: "{{ kubernetes_weave_manifest_file }}"
+    mode: 0644
 
 - name: Configure Weave networking.
   command: "{{ item }}"
   with_items:
-    - "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version={{ kubectl_version.stdout_lines[0] }}"
+    - "kubectl apply -f {{ kubernetes_weave_manifest_file }}"
   register: weave_result
   changed_when: "'created' in weave_result.stdout"
   when: kubernetes_pod_network.cni == 'weave'

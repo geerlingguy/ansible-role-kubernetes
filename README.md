@@ -124,9 +124,11 @@ kubernetes_pod_network:
   # cni: 'calico'
   # cidr: '192.168.0.0/16'
   #
-  # Weave CNI.
+  # Weave CNI. Encryption enabled.
   # cni: 'weave'
   # cidr: '192.168.0.0/16'
+  # weavecidr: '192.168.144.0/24'
+  # weavepasswd: 'changemeplz'
 ```
 
 This role currently supports `flannel` (default), `calico` or `weave` for cluster pod networking. Choose only one for your cluster; converting between them is not done automatically and could result in broken networking; if you need to switch from one to another, it should be done outside of this role.

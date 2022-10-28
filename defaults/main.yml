@@ -27,6 +27,8 @@ kubernetes_pod_network:
   # Calico CNI.
   # cni: 'calico'
   # cidr: '192.168.0.0/16'
+  weavecidr: '192.168.144.0/24'
+  weavepasswd: 'changemeplz'
 
 kubernetes_kubeadm_kubelet_config_file_path: '/etc/kubernetes/kubeadm-kubelet-config.yaml'
 kubernetes_config_kubelet_configuration:
@@ -70,3 +72,6 @@ kubernetes_flannel_manifest_file: https://raw.githubusercontent.com/flannel-io/f
 
 # Calico config file.
 kubernetes_calico_manifest_file: https://projectcalico.docs.tigera.io/manifests/calico.yaml
+
+# Weave config file.
+kubernetes_weave_manifest_file: /tmp/weave.yaml

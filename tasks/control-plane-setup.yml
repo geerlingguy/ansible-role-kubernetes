@@ -62,7 +62,11 @@
   with_items:
     - "kubectl create secret -n kube-system generic weave-passwd --from-literal=weave-passwd={{ kubernetes_pod_network.weavepasswd }}"
   register: weave_secret_result
-  changed_when: "'created' in weave_secret_result.stdout"
+  changed_when: 
+    - "'created' in weave_secret_result.stdout"
+  failed_when:
+    - weave_secret_result.rc != 0
+    - "'already exists' not in weave_secret_result.stderr"
   when: kubernetes_pod_network.cni == 'weave'
 
 - name: Add weave configuration file.

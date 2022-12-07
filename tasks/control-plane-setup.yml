@@ -75,7 +75,7 @@
 # add/remove the taint according to kubernetes_allow_pods_on_control_plane
 
 - name: Get node spec
-  command: kubectl get nodes {{ ansible_hostname }} -o=jsonpath='{.spec}' 
+  command: kubectl get nodes -o=jsonpath='{.items[*].spec}' 
   register: node_spec
 
 - name: Store node spec as JSON
@@ -92,13 +92,13 @@
   with_items: "{{ node_spec_json.taints }}"
 
 - name: Allow pods on the control plane
-  command: kubectl taint nodes {{ ansible_hostname }} node-role.kubernetes.io/control-plane-
+  command: kubectl taint nodes --all node-role.kubernetes.io/control-plane-
   when: 
   - kubernetes_allow_pods_on_control_plane | bool
   - taint_status is defined
 
 - name: Deny pods on the control plane
-  command: kubectl taint nodes {{ ansible_hostname }} node-role.kubernetes.io/control-plane:NoSchedule
+  command: kubectl taint nodes --all node-role.kubernetes.io/control-plane:NoSchedule
   when:
   - not kubernetes_allow_pods_on_control_plane | bool
   - taint_status is not defined

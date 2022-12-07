@@ -71,10 +71,34 @@
   changed_when: "'created' in weave_result.stdout"
   when: kubernetes_pod_network.cni == 'weave'
 
-# TODO: Check if taint exists with something like `kubectl describe nodes`
-# instead of using kubernetes_init_stat.stat.exists check.
-- name: Allow pods on control plane (if configured).
-  command: "kubectl taint nodes --all node-role.kubernetes.io/control-plane-"
+# Get the current taint status from the control-plane node
+# add/remove the taint according to kubernetes_allow_pods_on_control_plane
+
+- name: Get node spec
+  command: kubectl get nodes {{ ansible_hostname }} -o=jsonpath='{.spec}' 
+  register: node_spec
+
+- name: Store node spec as JSON
+  set_fact:
+    node_spec_json: "{{ node_spec.stdout | from_json }}"
+
+- name: Get current taint status
+  set_fact:
+    taint_status: true
+  when: 
+  - node_spec_json.taints is defined
+  - item.effect == "NoSchedule"
+  - item.key == "node-role.kubernetes.io/control-plane"
+  with_items: "{{ node_spec_json.taints }}"
+
+- name: Allow pods on the control plane
+  command: kubectl taint nodes {{ ansible_hostname }} node-role.kubernetes.io/control-plane-
+  when: 
+  - kubernetes_allow_pods_on_control_plane | bool
+  - taint_status is defined
+
+- name: Deny pods on the control plane
+  command: kubectl taint nodes {{ ansible_hostname }} node-role.kubernetes.io/control-plane:NoSchedule
   when:
-    - kubernetes_allow_pods_on_control_plane | bool
-    - not kubernetes_init_stat.stat.exists
+  - not kubernetes_allow_pods_on_control_plane | bool
+  - taint_status is not defined

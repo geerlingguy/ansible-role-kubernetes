@@ -1,11 +1,11 @@
 ---
 - block:
-  
+
   - name: Enable br_netfilter module
     modprobe:
       name: br_netfilter
       state: present
-  
+
   - name: Ensure procps is installed.
     package:
       name: "{{ procps_package }}"
@@ -27,7 +27,7 @@
     when: >
       ansible_distribution != 'Debian'
       or ansible_distribution_major_version | int < 10
-      
+
   become: yes
   become_user: root
   become_method: sudo

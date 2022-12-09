@@ -5,7 +5,7 @@
     modprobe:
       name: br_netfilter
       state: present
-    when: (ansible_os_family | lower) == "ubuntu"
+    when: ansible_distribution == "Debian"
 
   - name: Ensure procps is installed.
     package:

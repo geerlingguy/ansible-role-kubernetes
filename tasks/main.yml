@@ -53,7 +53,7 @@
   when: kubernetes_join_command_result.stdout is defined
   delegate_to: "{{ item }}"
   delegate_facts: true
-  with_items: "{{ groups['all'] }}"
+  with_items: "{{ play_hosts }}"
 
 - include_tasks: node-setup.yml
   when: kubernetes_role == 'node'

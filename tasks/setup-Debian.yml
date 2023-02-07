@@ -24,3 +24,9 @@
     src: apt-preferences-kubernetes.j2
     dest: /etc/apt/preferences.d/kubernetes
     mode: 0644
+
+- name: Update APT
+  apt:
+    update_cache: true
+    cache_valid_time: 86400
+    force_apt_get: true

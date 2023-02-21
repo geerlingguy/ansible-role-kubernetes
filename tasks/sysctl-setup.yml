@@ -7,7 +7,24 @@
     ansible_distribution != 'Debian'
     or ansible_distribution_major_version | int < 10
 
-# See: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
+# See: https://kubernetes.io/docs/setup/production-environment/container-runtimes/#forwarding-ipv4-and-letting-iptables-see-bridged-traffic
+- name: Ensure relevant kernel module is enabled
+  modprobe:
+    name: br_netfilter
+    state: present
+  loop:
+    - br_netfilter
+    - overlay
+
+- name: Persist kernel modules after reboot
+  lineinfile:
+    path: /etc/sysctl.d/k8s.conf
+    line: "{{ item }}"
+  loop:
+    - "net.bridge.bridge-nf-call-iptables = 1"
+    - "net.bridge.bridge-nf-call-ip6tables = 1"
+    - "net.ipv4.ip_forward = 1"
+
 - name: Let iptables see bridged traffic.
   sysctl:
     name: "{{ item }}"

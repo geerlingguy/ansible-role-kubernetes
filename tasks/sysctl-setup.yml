@@ -16,6 +16,20 @@
     - br_netfilter
     - overlay
 
+- name: Check if kernel parameter file exists
+  ansible.builtin.stat:
+    path: /etc/sysctl.d/k8s.conf
+  register: kubernetes_kernel_parameter_file
+
+- name: Create kernel parameter file if it doesn't exist
+  file:
+    path: /etc/sysctl.d/k8s.conf
+    state: touch
+    owner: root
+    group: root
+    mode: 0644
+  when: kubernetes_kernel_parameter_file.stat.exists is falsy
+
 - name: Persist kernel modules after reboot
   lineinfile:
     path: /etc/sysctl.d/k8s.conf

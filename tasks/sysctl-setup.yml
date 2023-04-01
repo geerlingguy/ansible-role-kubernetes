@@ -24,7 +24,8 @@
     - net.bridge.bridge-nf-call-iptables
     - net.bridge.bridge-nf-call-ip6tables
   when: >
-    ( ansible_distribution != 'Debian'
+    (ansible_distribution != 'Debian'
       or ansible_distribution_major_version | int < 10
-      or (ansible_distribution != 'Fedora' and ansible_distribution_major_version | int > 34)
-    ) and not ansible_virtualization_type == "docker"
+    )
+    and (ansible_distribution != 'Fedora' or ansible_distribution_major_version | int < 34)
+    and not ansible_virtualization_type == "docker"

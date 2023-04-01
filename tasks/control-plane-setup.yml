@@ -50,6 +50,7 @@
   register: flannel_result
   changed_when: "'created' in flannel_result.stdout"
   when: kubernetes_pod_network.cni == 'flannel'
+  until: "'created' in flannel_result.stdout"
   retries: 5
   delay: 10
 

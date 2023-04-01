@@ -1,6 +1,13 @@
 ---
 - name: Include OS-specific variables.
   include_vars: "{{ ansible_facts.os_family }}.yml"
+  when:
+  - ansible_distribution != 'Fedora'
+
+- name: Include Distribution-specific variables.
+  include_vars: "{{ ansible_facts.distribution }}.yml"
+  when:
+   - ansible_facts.distribution == 'Fedora'
 
 - include_tasks: setup-RedHat.yml
   when: ansible_facts.os_family == 'RedHat'

@@ -50,18 +50,38 @@
   register: flannel_result
   changed_when: "'created' in flannel_result.stdout"
   when: kubernetes_pod_network.cni == 'flannel'
-  until: flannel_result is not failed
-  retries: 12
-  delay: 5
+  retries: 5
+  delay: 10
 
 - name: Configure Calico networking.
-  command: "kubectl apply -f {{ kubernetes_calico_manifest_file }}"
-  register: calico_result
-  changed_when: "'created' in calico_result.stdout"
+  kubernetes.core.k8s:
+    state: present
+    apply: True
+    src: "{{ kubernetes_calico_manifest_file }}"
+    server_side_apply:
+      force_conflicts: True
+      field_manager: ansible
   when: kubernetes_pod_network.cni == 'calico'
-  until: calico_result is not failed
-  retries: 12
-  delay: 5
+
+- name: Create Calico configuration.
+  kubernetes.core.k8s:
+    state: present
+    apply: True
+    src: "{{ kubernetes_calico_configuration_file }}"
+    server_side_apply:
+      force_conflicts: True
+      field_manager: ansible
+  when: kubernetes_pod_network.cni == 'calico'
+
+- name: Install Calico ctl.
+  kubernetes.core.k8s:
+    state: present
+    apply: True
+    src: "{{ kubernetes_calicoctl_file }}"
+    server_side_apply:
+      force_conflicts: True
+      field_manager: ansible
+  when: kubernetes_pod_network.cni == 'calico'
 
 - name: Get Kubernetes version for Weave installation.
   shell: kubectl version | base64 | tr -d '\n'

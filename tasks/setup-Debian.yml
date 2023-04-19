@@ -10,6 +10,7 @@
   ansible.builtin.get_url:
     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
     dest: /etc/apt/trusted.gpg.d/kubernetes-archive-keyring.gpg
+    mode: 0644
   register: add_repository_key
   ignore_errors: "{{ kubernetes_apt_ignore_key_error }}"
 

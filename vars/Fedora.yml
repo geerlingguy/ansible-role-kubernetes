@@ -1,0 +1,12 @@
+---
+procps_package: procps-ng
+kubelet_environment_file_path: /etc/sysconfig/kubelet
+kubernetes_packages:
+  - name: kubelet-{{ kubernetes_version_fedora_package }}
+    state: present
+  - name: kubectl-{{ kubernetes_version_fedora_package }}
+    state: present
+  - name: kubeadm-{{ kubernetes_version_fedora_package }}
+    state: present
+  - name: kubernetes-cni
+    state: present

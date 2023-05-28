@@ -89,9 +89,8 @@
   changed_when: false
   register: kubectl_version
   when: kubernetes_pod_network.cni == 'weave'
-  until: kubectl_version is not failed
-  retries: 12
-  delay: 5
+  retries: 5
+  delay: 10
 
 - name: Configure Weave networking.
   command: "{{ item }}"

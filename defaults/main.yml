@@ -41,6 +41,7 @@ kubernetes_config_kubelet_configuration:
 kubernetes_config_init_configuration:
   localAPIEndpoint:
     advertiseAddress: "{{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}"
+    # bindPort: 6443
 # if you use the next lines, remove the command line argument below
 # nodeRegistration:
 #    ignorePreflightErrors:
@@ -69,4 +70,7 @@ kubernetes_yum_repo_gpg_check: true
 kubernetes_flannel_manifest_file: https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
 
 # Calico config file.
-kubernetes_calico_manifest_file: https://projectcalico.docs.tigera.io/manifests/calico.yaml
+calico_cni_version: v3.26.0
+kubernetes_calico_manifest_file: "https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests/tigera-operator.yaml"
+kubernetes_calico_configuration_file: "https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests/custom-resources.yaml"
+kubernetes_calicoctl_file: "https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests/calicoctl.yaml"

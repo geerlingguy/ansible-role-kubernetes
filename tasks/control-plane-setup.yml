@@ -51,7 +51,7 @@
   changed_when: "'created' in flannel_result.stdout"
   when: kubernetes_pod_network.cni == 'flannel'
   until: flannel_result is not failed
-  retries: 3
+  retries: 12
   delay: 5
 
 - name: Configure Calico networking.
@@ -60,7 +60,7 @@
   changed_when: "'created' in calico_result.stdout"
   when: kubernetes_pod_network.cni == 'calico'
   until: calico_result is not failed
-  retries: 3
+  retries: 12
   delay: 5
 
 - name: Get Kubernetes version for Weave installation.
@@ -69,7 +69,7 @@
   register: kubectl_version
   when: kubernetes_pod_network.cni == 'weave'
   until: kubectl_version is not failed
-  retries: 3
+  retries: 12
   delay: 5
 
 - name: Configure Weave networking.

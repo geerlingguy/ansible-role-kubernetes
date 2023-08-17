@@ -50,9 +50,9 @@
   register: flannel_result
   changed_when: "'created' in flannel_result.stdout"
   when: kubernetes_pod_network.cni == 'flannel'
-  until: flannel_result.rc == 0
-  retries: 5
-  delay: 10
+  until: flannel_result is not failed
+  retries: 12
+  delay: 5
 
 - name: Configure Calico networking.
   kubernetes.core.k8s:
@@ -89,8 +89,9 @@
   changed_when: false
   register: kubectl_version
   when: kubernetes_pod_network.cni == 'weave'
-  retries: 5
-  delay: 10
+  until: kubectl_version is not failed
+  retries: 12
+  delay: 5
 
 - name: Configure Weave networking.
   command: "{{ item }}"

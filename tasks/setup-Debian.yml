@@ -13,9 +13,11 @@
     mode: 0755
 
 - name: Get Kubernetes apt key.
-  shell: "curl -fsSL https://pkgs.k8s.io/core:/{{ kubernetes_apt_release_channel }}:/v{{ kubernetes_version }}/deb/Release.key | gpg --dearmor -o {{ kubernetes_apt_keyring_file }}"
-  args:
-    creates: "{{ kubernetes_apt_keyring_file }}"
+  ansible.builtin.get_url: 
+    url: "https://pkgs.k8s.io/core:/{{ kubernetes_apt_release_channel }}:/v{{ kubernetes_version }}/deb/Release.key"
+    dest: "{{ kubernetes_apt_keyring_file }}"
+    mode: '0644'
+    force: true
 
 - name: Be sure deprecated Kubernetes repository is absent.
   file: 
@@ -24,7 +26,7 @@
 
 - name: Add Kubernetes repository.
   ansible.builtin.apt_repository:
-    repo: "{{ kubernetes_apt_repository_pkgs_k8s_io }}"
+    repo: "{{ kubernetes_apt_repository }}"
     filename: pkgs_k8s_io
     state: present
     update_cache: true

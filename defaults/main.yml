@@ -51,10 +51,12 @@ kubernetes_apiserver_advertise_address: ''
 kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'
 kubernetes_ignore_preflight_errors: 'all'
 
-kubernetes_apt_release_channel: main
-# Note that xenial repo is used for all Debian derivatives at this time.
-kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-xenial {{ kubernetes_apt_release_channel }}"
+kubernetes_apt_release_channel: "stable"
+kubernetes_apt_keyring_file: "/etc/apt/keyrings/kubernetes-apt-keyring.gpg" 
+kubernetes_apt_repository_pkgs_k8s_io: "deb [signed-by={{ kubernetes_apt_keyring_file }}] https://pkgs.k8s.io/core:/{{ kubernetes_apt_release_channel }}:/v{{ kubernetes_version }}/deb/ /"
 kubernetes_apt_ignore_key_error: false
+# this one is deprecated and will be deleted with this role
+kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-xenial {{ kubernetes_apt_release_channel }}"
 
 kubernetes_yum_arch: '$basearch'
 kubernetes_yum_base_url: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-{{ kubernetes_yum_arch }}"

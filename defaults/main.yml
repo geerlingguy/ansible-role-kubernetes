@@ -11,6 +11,7 @@ kubernetes_packages:
 
 kubernetes_version: '1.25'
 kubernetes_version_rhel_package: '1.25.1'
+kubernetes_cilium_version: '1.14.5' # Set the default version of Cilium to install
 
 kubernetes_role: control_plane
 
@@ -70,3 +71,5 @@ kubernetes_flannel_manifest_file: https://raw.githubusercontent.com/flannel-io/f
 
 # Calico config file.
 kubernetes_calico_manifest_file: https://projectcalico.docs.tigera.io/manifests/calico.yaml
+
+

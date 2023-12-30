@@ -45,6 +45,68 @@
     state: link
     mode: 0644
 
+- name: Taint nodes with cilium agent-not-ready
+  command: kubectl taint nodes --all node.cilium.io/agent-not-ready=true:NoExecute
+  when:
+    - kubernetes_pod_network.cni == 'cilium'
+    - not kubernetes_init_stat.stat.exists
+
+- name: Check if Cilium CLI has already been Installed.
+  stat:
+    path: /usr/local/bin/cilium
+  register: cilium_init_stat
+
+- name: Install Cilium CLI
+  when:
+    - kubernetes_pod_network.cni == 'cilium'
+    - not cilium_init_stat.stat.exists
+  block:
+    - name: Get Cilium CLI version
+      shell: curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt
+      register: cilium_cli_version
+      changed_when: false
+
+    - name: Set CLI architecture
+      set_fact:
+        cli_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
+
+    - name: Download Cilium CLI
+      get_url:
+        url: "https://github.com/cilium/cilium-cli/releases/download/{{ cilium_cli_version.stdout }}/cilium-linux-{{ cli_arch }}.tar.gz"
+        dest: "/tmp/cilium-linux-{{ cli_arch }}.tar.gz"
+        mode: '0644'
+
+    - name: Download Cilium CLI checksum
+      get_url:
+        url: "https://github.com/cilium/cilium-cli/releases/download/{{ cilium_cli_version.stdout }}/cilium-linux-{{ cli_arch }}.tar.gz.sha256sum"
+        dest: "/tmp/cilium-linux-{{ cli_arch }}.tar.gz.sha256sum"
+        mode: '0644'
+
+    - name: Verify Cilium CLI checksum
+      shell: sha256sum --check /tmp/cilium-linux-{{ cli_arch }}.tar.gz.sha256sum
+      args:
+        chdir: /tmp
+
+    - name: Extract Cilium CLI
+      unarchive:
+        src: "/tmp/cilium-linux-{{ cli_arch }}.tar.gz"
+        dest: /usr/local/bin
+        remote_src: yes
+
+    - name: Remove downloaded files
+      file:
+        path: "/tmp/cilium-linux-{{ cli_arch }}.tar.gz{{ item }}"
+        state: absent
+      loop:
+        - ''
+        - '.sha256sum'
+
+- name: Configure Cilium networking
+  command: /usr/local/bin/cilium install --version {{ kubernetes_cilium_version }}
+  when:
+    - kubernetes_pod_network.cni == 'cilium'
+    - not kubernetes_init_stat.stat.exists
+
 - name: Configure Flannel networking.
   command: "kubectl apply -f {{ kubernetes_flannel_manifest_file }}"
   register: flannel_result
@@ -87,3 +149,5 @@
   when:
     - kubernetes_allow_pods_on_control_plane | bool
     - not kubernetes_init_stat.stat.exists
+
+

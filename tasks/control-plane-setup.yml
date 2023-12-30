@@ -91,7 +91,7 @@
       unarchive:
         src: "/tmp/cilium-linux-{{ cli_arch }}.tar.gz"
         dest: /usr/local/bin
-        remote_src: yes
+        remote_src: true
 
     - name: Remove downloaded files
       file:
@@ -149,5 +149,3 @@
   when:
     - kubernetes_allow_pods_on_control_plane | bool
     - not kubernetes_init_stat.stat.exists
-
-

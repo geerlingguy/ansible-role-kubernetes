@@ -45,12 +45,6 @@
     state: link
     mode: 0644
 
-- name: Taint nodes with cilium agent-not-ready
-  command: kubectl taint nodes --all node.cilium.io/agent-not-ready=true:NoExecute
-  when:
-    - kubernetes_pod_network.cni == 'cilium'
-    - not kubernetes_init_stat.stat.exists
-
 - name: Check if Cilium CLI has already been Installed.
   stat:
     path: /usr/local/bin/cilium
@@ -100,12 +94,27 @@
       loop:
         - ''
         - '.sha256sum'
-
-- name: Configure Cilium networking
-  command: /usr/local/bin/cilium install --version {{ kubernetes_cilium_version }} --datapath-mode {{ kubernetes_cilium_datapath }}
+- name: Taint nodes with cilium agent-not-ready
+  command: kubectl taint nodes --all node.cilium.io/agent-not-ready=true:NoExecute
   when:
     - kubernetes_pod_network.cni == 'cilium'
     - not kubernetes_init_stat.stat.exists
+  register: cilium_taint
+  changed_when: "'tainted' in cilium_taint.stdout"
+  until: cilium_taint is not failed
+  retries: 12
+  delay: 5
+
+- name: Configure Cilium networking
+  command: /usr/local/bin/cilium install --version {{ kubernetes_cilium_version }} --datapath-mode {{ kubernetes_cilium_datapath }} 
+  when:
+    - kubernetes_pod_network.cni == 'cilium'
+    - not kubernetes_init_stat.stat.exists
+  register: cilium_result
+  changed_when: "'Error' not in cilium_result.stdout"
+  until: cilium_result is not failed
+  retries: 20
+  delay: 5
 
 - name: Configure Flannel networking.
   command: "kubectl apply -f {{ kubernetes_flannel_manifest_file }}"

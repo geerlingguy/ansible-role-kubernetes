@@ -102,7 +102,7 @@
         - '.sha256sum'
 
 - name: Configure Cilium networking
-  command: /usr/local/bin/cilium install --version {{ kubernetes_cilium_version }}
+  command: /usr/local/bin/cilium install --version {{ kubernetes_cilium_version }} --datapath-mode {{ kubernetes_cilium_datapath }}
   when:
     - kubernetes_pod_network.cni == 'cilium'
     - not kubernetes_init_stat.stat.exists

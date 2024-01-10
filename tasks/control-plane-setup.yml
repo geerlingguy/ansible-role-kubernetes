@@ -9,6 +9,14 @@
     src: "kubeadm-kubelet-config.j2"
     dest: "{{ kubernetes_kubeadm_kubelet_config_file_path }}"
 
+- name: Determine if we are deploying kube-proxy
+  set_fact:
+    replace_kube_proxy: >
+      (kubernetes_pod_network.cni == 'cilium') and
+      (kubernetes_cilium_values is defined) and
+      (kubernetes_cilium_values.kubeProxyReplacement is defined) and
+      (kubernetes_cilium_values.kubeProxyReplacement)
+
 - name: Initialize Kubernetes control plane with kubeadm init
   command: >
     kubeadm init
@@ -18,7 +26,7 @@
   when: >
     (not kubernetes_init_stat.stat.exists) and
     (kubernetes_ignore_preflight_errors is not defined) and
-    (not kubernetes_cilium_values.kubeProxyReplacement)
+    (not replace_kube_proxy)
 
 - name: Initialize Kubernetes control plane with kubeadm init and ignore_preflight_errors
   command: >
@@ -30,7 +38,7 @@
   when: >
     (not kubernetes_init_stat.stat.exists) and
     (kubernetes_ignore_preflight_errors is defined) and
-    (not kubernetes_cilium_values.kubeProxyReplacement)
+    (not replace_kube_proxy)
 
 - name: Initialize Kubernetes control plane with kubeadm init without kube-proxy
   command: >
@@ -42,7 +50,7 @@
   when: >
     (not kubernetes_init_stat.stat.exists) and
     (kubernetes_ignore_preflight_errors is not defined) and
-    (kubernetes_cilium_values.kubeProxyReplacement)
+    (replace_kube_proxy)
 
 - name: Initialize Kubernetes control plane with kubeadm init without kube-proxy and ignore_preflight_errors
   command: >
@@ -54,8 +62,8 @@
   register: kubeadmin_init
   when: >
     (not kubernetes_init_stat.stat.exists) and
-    (kubernetes_ignore_preflight_errors is defined) and
-    (kubernetes_cilium_values.kubeProxyReplacement)
+    (kubernetes_ignore_preflight_errors is defined)
+    (replace_kube_proxy)
 
 - name: Print the init output to screen.
   debug:
@@ -151,11 +159,29 @@
     --version {{ kubernetes_cilium_version }}
     --datapath-mode {{ kubernetes_cilium_datapath }}
     --values /tmp/cilium_helm.yaml
+  when:
+    - kubernetes_pod_network.cni == 'cilium'
+    - not kubernetes_init_stat.stat.exists
+    - not replace_kube_proxy
+  register: cilium_result
+  changed_when: "'Error' not in cilium_result.stdout"
+  until: cilium_result is not failed
+  retries: 20
+  delay: 5
+
+- name: Configure Cilium networking and replace kube-proxy
+  command: >
+    /usr/local/bin/cilium install
+    --version {{ kubernetes_cilium_version }}
+    --datapath-mode {{ kubernetes_cilium_datapath }}
+    --values /tmp/cilium_helm.yaml
     --set k8sServiceHost="{{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}"
     --set k8sServicePort=6443
   when:
     - kubernetes_pod_network.cni == 'cilium'
     - not kubernetes_init_stat.stat.exists
+    - replace_kube_proxy
+
   register: cilium_result
   changed_when: "'Error' not in cilium_result.stdout"
   until: cilium_result is not failed

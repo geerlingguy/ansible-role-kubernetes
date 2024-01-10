@@ -129,7 +129,7 @@ kubernetes_pod_network:
   # cidr: '192.168.0.0/16'
 ```
 
-This role currently supports `flannel` (default), `calico` or `weave` for cluster pod networking. Choose only one for your cluster; converting between them is not done automatically and could result in broken networking; if you need to switch from one to another, it should be done outside of this role.
+This role currently supports `flannel` (default), `cilium`, `calico` or `weave` for cluster pod networking. Choose only one for your cluster; converting between them is not done automatically and could result in broken networking; if you need to switch from one to another, it should be done outside of this role.
 
 ```yaml
 kubernetes_apiserver_advertise_address: ''`
@@ -167,6 +167,13 @@ Flannel manifest file to apply to the Kubernetes cluster to enable networking. Y
 
 ```yaml
 kubernetes_calico_manifest_file: https://projectcalico.docs.tigera.io/manifests/calico.yaml
+```
+
+Cilium Helm chart values can be specified under `kubernetes_cilium_values`. [Kube Proxy Replacement](https://docs.cilium.io/en/latest/network/kubernetes/kubeproxy-free/) is supported through this method.
+
+```yaml
+kubernetes_cilium_values:
+  kubeProxyReplacement: true
 ```
 
 Calico manifest file to apply to the Kubernetes cluster (if using Calico instead of Flannel).

@@ -16,8 +16,8 @@
     {{ kubernetes_kubeadm_init_extra_opts }}
   register: kubeadmin_init
   when: >
-    (not kubernetes_init_stat.stat.exists) and 
-    (kubernetes_ignore_preflight_errors is not defined) and 
+    (not kubernetes_init_stat.stat.exists) and
+    (kubernetes_ignore_preflight_errors is not defined) and
     (not kubernetes_cilium_values.kubeProxyReplacement)
 
 - name: Initialize Kubernetes control plane with kubeadm init and ignore_preflight_errors
@@ -27,9 +27,9 @@
     --ignore-preflight-errors={{ kubernetes_ignore_preflight_errors }}
     {{ kubernetes_kubeadm_init_extra_opts }}
   register: kubeadmin_init
-  when: > 
-    (not kubernetes_init_stat.stat.exists) and 
-    (kubernetes_ignore_preflight_errors is defined) and 
+  when: >
+    (not kubernetes_init_stat.stat.exists) and
+    (kubernetes_ignore_preflight_errors is defined) and
     (not kubernetes_cilium_values.kubeProxyReplacement)
 
 - name: Initialize Kubernetes control plane with kubeadm init without kube-proxy
@@ -40,8 +40,8 @@
     {{ kubernetes_kubeadm_init_extra_opts }}
   register: kubeadmin_init
   when: >
-    (not kubernetes_init_stat.stat.exists) and 
-    (kubernetes_ignore_preflight_errors is not defined) and 
+    (not kubernetes_init_stat.stat.exists) and
+    (kubernetes_ignore_preflight_errors is not defined) and
     (kubernetes_cilium_values.kubeProxyReplacement)
 
 - name: Initialize Kubernetes control plane with kubeadm init without kube-proxy and ignore_preflight_errors
@@ -53,8 +53,8 @@
     {{ kubernetes_kubeadm_init_extra_opts }}
   register: kubeadmin_init
   when: >
-    (not kubernetes_init_stat.stat.exists) and 
-    (kubernetes_ignore_preflight_errors is defined) and 
+    (not kubernetes_init_stat.stat.exists) and
+    (kubernetes_ignore_preflight_errors is defined) and
     (kubernetes_cilium_values.kubeProxyReplacement)
 
 - name: Print the init output to screen.

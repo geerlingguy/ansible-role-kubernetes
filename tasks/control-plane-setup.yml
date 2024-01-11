@@ -9,13 +9,12 @@
     src: "kubeadm-kubelet-config.j2"
     dest: "{{ kubernetes_kubeadm_kubelet_config_file_path }}"
 
-- name: Determine if we are deploying kube-proxy
+- name: Determine if we are replacing kube-proxy with cilium
   set_fact:
-    replace_kube_proxy: >
-      (kubernetes_pod_network.cni == 'cilium') and
-      (kubernetes_cilium_values is defined) and
-      (kubernetes_cilium_values.kubeProxyReplacement is defined) and
-      (kubernetes_cilium_values.kubeProxyReplacement)
+    replace_kube_proxy="{{ (kubernetes_pod_network.cni == 'cilium') and
+        (kubernetes_cilium_values is defined) and
+        (kubernetes_cilium_values.kubeProxyReplacement is defined) and
+        (kubernetes_cilium_values.kubeProxyReplacement) | bool }}"
 
 - name: Initialize Kubernetes control plane with kubeadm init
   command: >
@@ -26,7 +25,7 @@
   when: >
     (not kubernetes_init_stat.stat.exists) and
     (kubernetes_ignore_preflight_errors is not defined) and
-    (not replace_kube_proxy)
+    (not (replace_kube_proxy))
 
 - name: Initialize Kubernetes control plane with kubeadm init and ignore_preflight_errors
   command: >
@@ -38,7 +37,7 @@
   when: >
     (not kubernetes_init_stat.stat.exists) and
     (kubernetes_ignore_preflight_errors is defined) and
-    (not replace_kube_proxy)
+    (not (replace_kube_proxy))
 
 - name: Initialize Kubernetes control plane with kubeadm init without kube-proxy
   command: >
@@ -62,7 +61,7 @@
   register: kubeadmin_init
   when: >
     (not kubernetes_init_stat.stat.exists) and
-    (kubernetes_ignore_preflight_errors is defined)
+    (kubernetes_ignore_preflight_errors is defined) and
     (replace_kube_proxy)
 
 - name: Print the init output to screen.

@@ -34,6 +34,12 @@
     path: /etc/kubernetes/admin.conf
   register: kubernetes_init_stat
 
+# Set up Cilium Client.
+- include_tasks: cilium-client-setup.yml
+  when:
+    - kubernetes_pod_network.cni == 'cilium'
+    - kubernetes_role == 'control_plane'
+
 # Set up control plane.
 - include_tasks: control-plane-setup.yml
   when: kubernetes_role == 'control_plane'

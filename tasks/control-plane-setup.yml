@@ -22,10 +22,10 @@
     --config {{ kubernetes_kubeadm_kubelet_config_file_path }}
     {{ kubernetes_kubeadm_init_extra_opts }}
   register: kubeadmin_init
-  when: >
-    (not kubernetes_init_stat.stat.exists) and
-    (kubernetes_ignore_preflight_errors is not defined) and
-    (not (replace_kube_proxy))
+  when:
+    - not kubernetes_init_stat.stat.exists
+    - kubernetes_ignore_preflight_errors is not defined
+    - not replace_kube_proxy
 
 - name: Initialize Kubernetes control plane with kubeadm init and ignore_preflight_errors
   command: >
@@ -34,10 +34,10 @@
     --ignore-preflight-errors={{ kubernetes_ignore_preflight_errors }}
     {{ kubernetes_kubeadm_init_extra_opts }}
   register: kubeadmin_init
-  when: >
-    (not kubernetes_init_stat.stat.exists) and
-    (kubernetes_ignore_preflight_errors is defined) and
-    (not (replace_kube_proxy))
+  when:
+    - not kubernetes_init_stat.stat.exists
+    - kubernetes_ignore_preflight_errors is defined
+    - not replace_kube_proxy
 
 - name: Initialize Kubernetes control plane with kubeadm init without kube-proxy
   command: >
@@ -46,10 +46,10 @@
     --skip-phases=addon/kube-proxy
     {{ kubernetes_kubeadm_init_extra_opts }}
   register: kubeadmin_init
-  when: >
-    (not kubernetes_init_stat.stat.exists) and
-    (kubernetes_ignore_preflight_errors is not defined) and
-    (replace_kube_proxy)
+  when:
+    - not kubernetes_init_stat.stat.exists
+    - kubernetes_ignore_preflight_errors is not defined
+    - replace_kube_proxy
 
 - name: Initialize Kubernetes control plane with kubeadm init without kube-proxy and ignore_preflight_errors
   command: >
@@ -59,10 +59,10 @@
     --skip-phases=addon/kube-proxy
     {{ kubernetes_kubeadm_init_extra_opts }}
   register: kubeadmin_init
-  when: >
-    (not kubernetes_init_stat.stat.exists) and
-    (kubernetes_ignore_preflight_errors is defined) and
-    (replace_kube_proxy)
+  when:
+    - not kubernetes_init_stat.stat.exists
+    - kubernetes_ignore_preflight_errors is defined
+    - replace_kube_proxy
 
 - name: Print the init output to screen.
   debug:

@@ -37,8 +37,17 @@
 # Set up Cilium Client.
 - include_tasks: cilium-client-setup.yml
   when:
-    - kubernetes_pod_network.cni == 'cilium'
     - kubernetes_role == 'control_plane'
+    - kubernetes_pod_network.cni == 'cilium'
+
+# Set up hubble Client.
+- include_tasks: hubble-client-setup.yml
+  when:
+    - kubernetes_role == 'control_plane'
+    - kubernetes_pod_network.cni == 'cilium'
+    - kubernetes_cilium_hubble_client
+    - kubernetes_cilium_values.hubble.relay.enabled is defined
+    - kubernetes_cilium_values.hubble.relay.enabled
 
 # Set up control plane.
 - include_tasks: control-plane-setup.yml

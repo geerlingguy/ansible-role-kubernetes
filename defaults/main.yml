@@ -13,6 +13,7 @@ kubernetes_version: '1.25'
 kubernetes_version_rhel_package: '1.25.1'
 kubernetes_cilium_version: '1.14.5'
 kubernetes_cilium_datapath: 'native'
+kubernetes_cilium_hubble_client: false
 kubernetes_cilium_values: ""
 
 kubernetes_role: control_plane

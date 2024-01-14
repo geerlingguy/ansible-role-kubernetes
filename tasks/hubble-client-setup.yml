@@ -1,0 +1,53 @@
+---
+- name: Check if Hubble CLI has already been Installed.
+  stat:
+    path: /usr/local/bin/hubble
+  register: hubble_init_stat
+  when:
+    - kubernetes_pod_network.cni == 'cilium'
+
+- name: Install Hubble CLI
+  when:
+    - kubernetes_pod_network.cni == 'cilium'
+    - not hubble_init_stat.stat.exists
+  block:
+    - name: Get Hubble CLI version
+      shell: curl -s https://raw.githubusercontent.com/cilium/hubble/master/stable.txt
+      register: hubble_cli_version
+      changed_when: false
+
+    - name: Set CLI architecture
+      set_fact:
+        cli_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
+
+
+    - name: Download Hubble CLI
+      get_url:
+        url: "https://github.com/cilium/hubble/releases/download/{{ hubble_cli_version.stdout }}/hubble-linux-{{ cli_arch }}.tar.gz"
+        dest: "/tmp/hubble-linux-{{ cli_arch }}.tar.gz"
+        mode: '0644'
+
+    - name: Download Hubble CLI checksum
+      get_url:
+        url: "https://github.com/cilium/hubble/releases/download/{{ hubble_cli_version.stdout }}/hubble-linux-{{ cli_arch }}.tar.gz.sha256sum"
+        dest: "/tmp/hubble-linux-{{ cli_arch }}.tar.gz.sha256sum"
+        mode: '0644'
+
+    - name: Verify Hubble CLI checksum
+      shell: sha256sum --check /tmp/hubble-linux-{{ cli_arch }}.tar.gz.sha256sum
+      args:
+        chdir: /tmp
+
+    - name: Extract Hubble CLI
+      unarchive:
+        src: "/tmp/hubble-linux-{{ cli_arch }}.tar.gz"
+        dest: /usr/local/bin
+        remote_src: true
+
+    - name: Remove downloaded files
+      file:
+        path: "/tmp/hubble-linux-{{ cli_arch }}.tar.gz{{ item }}"
+        state: absent
+      loop:
+        - ''
+        - '.sha256sum'

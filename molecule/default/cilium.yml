@@ -1,0 +1,74 @@
+---
+- name: Converge
+  hosts: all
+  become: true
+
+  vars:
+    kubernetes_cilium_hubble_client: true
+    kubernetes_cilium_values:
+      envoy:
+        enabled: true
+      kubeProxyReplacement: true
+      l7Proxy: true
+      loadBalancer:
+        l7:
+          backend: envoy
+      ingressController:
+        enabled: true
+        loadbalancerMode: dedicated
+        default: true
+      hubble:
+        relay:
+          enabled: true
+        ui:
+          enabled: true
+      gatewayAPI:
+        enabled: true
+    kubernetes_pod_network:
+      cni: 'cilium'
+      cidr: 10.244.0.0/16
+
+    # Allow swap in test environments (hard to control in some envs).
+    kubernetes_config_kubelet_configuration:
+      cgroupDriver: "systemd"
+      failSwapOn: false
+      cgroupsPerQOS: true
+      enforceNodeAllocatable: ['pods']
+    containerd_config_cgroup_driver_systemd: true
+
+  pre_tasks:
+    - name: Update apt cache.
+      apt: update_cache=true cache_valid_time=600
+      when: ansible_os_family == 'Debian'
+
+    - name: Ensure test dependencies are installed (RedHat).
+      package: name=iproute state=present
+      when: ansible_os_family == 'RedHat'
+
+    - name: Ensure test dependencies are installed (Debian).
+      package: name=iproute2 state=present
+      when: ansible_os_family == 'Debian'
+
+    - name: Gather facts.
+      action: setup
+
+  roles:
+    - role: geerlingguy.containerd
+    - role: geerlingguy.kubernetes
+
+  post_tasks:
+    - name: Get cluster info.
+      command: kubectl cluster-info
+      changed_when: false
+      register: kubernetes_info
+
+    - name: Print cluster info.
+      debug: var=kubernetes_info.stdout
+
+    - name: Get all running pods.
+      command: kubectl get pods --all-namespaces
+      changed_when: false
+      register: kubernetes_pods
+
+    - name: Print list of running pods.
+      debug: var=kubernetes_pods.stdout

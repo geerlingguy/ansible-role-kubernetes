@@ -169,14 +169,31 @@ Flannel manifest file to apply to the Kubernetes cluster to enable networking. Y
 kubernetes_calico_manifest_file: https://projectcalico.docs.tigera.io/manifests/calico.yaml
 ```
 
-Cilium Helm chart values can be specified under `kubernetes_cilium_values`. [Kube Proxy Replacement](https://docs.cilium.io/en/latest/network/kubernetes/kubeproxy-free/) is supported through this method.
+Calico manifest file to apply to the Kubernetes cluster (if using Calico instead of Flannel).
+
+#### Cilium
 
 ```yaml
+kubernetes_cilium_hubble_client: true
 kubernetes_cilium_values:
   kubeProxyReplacement: true
+  gatewayAPI:
+    enabled: true
 ```
 
-Calico manifest file to apply to the Kubernetes cluster (if using Calico instead of Flannel).
+Cilium Helm chart values can be specified under `kubernetes_cilium_values`.
+
+##### Kube Proxy Replacement
+
+[Kube Proxy Replacement](https://docs.cilium.io/en/latest/network/kubernetes/kubeproxy-free/) is supported through this method. The is a prerequisite for Gateway API Support.
+
+##### Gateway API Support
+
+[Gateway API Support](https://docs.cilium.io/en/latest/network/servicemesh/gateway-api/gateway-api/#gs-gateway-api). This will install additional CRDs to support GatewayAPI.
+
+##### Hubble Observability
+
+In addition to setting up [Setting up Hubble Observability](https://docs.cilium.io/en/stable/gettingstarted/hubble_setup/#hubble-setup), you may choose to install the hubble client with `kubernetes_cilium_hubble_client: true`
 
 ## Dependencies
 

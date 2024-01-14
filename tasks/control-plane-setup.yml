@@ -16,6 +16,12 @@
         (kubernetes_cilium_values.kubeProxyReplacement is defined) and
         (kubernetes_cilium_values.kubeProxyReplacement) | bool }}"
 
+- name: Determine if we installing Gateway API
+  set_fact:
+    install_gateway_api="{{ (replace_kube_proxy) and
+        (kubernetes_cilium_values.gatewayAPI.enabled is defined) and
+        (kubernetes_cilium_values.gatewayAPI.enabled)| bool }}"
+
 - name: Initialize Kubernetes control plane with kubeadm init
   command: >
     kubeadm init
@@ -101,6 +107,17 @@
   until: cilium_taint is not failed
   retries: 12
   delay: 5
+
+- name: Install Prerequisite CRDs for Cilium Gateway API support.
+  when: install_gateway_api
+  command: "kubectl apply -f {{ item }}"
+  loop:
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/experimental/gateway.networking.k8s.io_grpcroutes.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
 
 - name: Configure Cilium networking
   command: >

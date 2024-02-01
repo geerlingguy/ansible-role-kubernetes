@@ -53,7 +53,7 @@ kubernetes_ignore_preflight_errors: 'all'
 
 kubernetes_apt_release_channel: main
 # Note that xenial repo is used for all Debian derivatives at this time.
-kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-xenial {{ kubernetes_apt_release_channel }}"
+kubernetes_apt_repository: "deb [signed-by=/etc/apt/trusted.gpg.d/kubernetes-archive-keyring.gpg] http://apt.kubernetes.io/ kubernetes-xenial {{ kubernetes_apt_release_channel }}"
 kubernetes_apt_ignore_key_error: false
 
 kubernetes_yum_arch: '$basearch'

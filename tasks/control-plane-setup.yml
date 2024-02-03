@@ -10,17 +10,15 @@
     dest: "{{ kubernetes_kubeadm_kubelet_config_file_path }}"
 
 - name: Determine if we are replacing kube-proxy with cilium
-  set_fact:
-    replace_kube_proxy="{{ (kubernetes_pod_network.cni == 'cilium') and
-        (kubernetes_cilium_values is defined) and
-        (kubernetes_cilium_values.kubeProxyReplacement is defined) and
-        (kubernetes_cilium_values.kubeProxyReplacement) | bool }}"
+  set_fact: replace_kube_proxy="{{ (kubernetes_pod_network.cni == 'cilium') and
+    (kubernetes_cilium_values is defined) and
+    (kubernetes_cilium_values.kubeProxyReplacement is defined) and
+    (kubernetes_cilium_values.kubeProxyReplacement) | bool }}"
 
 - name: Determine if we installing Gateway API
-  set_fact:
-    install_gateway_api="{{ (replace_kube_proxy) and
-        (kubernetes_cilium_values.gatewayAPI.enabled is defined) and
-        (kubernetes_cilium_values.gatewayAPI.enabled)| bool }}"
+  set_fact: install_gateway_api="{{ (replace_kube_proxy) and
+    (kubernetes_cilium_values.gatewayAPI.enabled is defined) and
+    (kubernetes_cilium_values.gatewayAPI.enabled)| bool }}"
 
 - name: Initialize Kubernetes control plane with kubeadm init
   command: >
@@ -120,6 +118,8 @@
     - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
     - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/experimental/gateway.networking.k8s.io_grpcroutes.yaml
     - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/experimental/gateway.networking.k8s.io_tcproutes.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/experimental/gateway.networking.k8s.io_udproutes.yaml
 
 - name: Configure Cilium networking
   command: >

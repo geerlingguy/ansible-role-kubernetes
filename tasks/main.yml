@@ -20,7 +20,7 @@
 
 - include_tasks: sysctl-setup.yml
 
-- include_tasks: kubelet-setup.yml  # deprecated
+- include_tasks: kubelet-setup.yml # deprecated
   when: kubernetes_kubelet_extra_args|length > 0
 
 - name: Ensure kubelet is started and enabled at boot.
@@ -34,16 +34,23 @@
     path: /etc/kubernetes/admin.conf
   register: kubernetes_init_stat
 
+- name: Group the kubernetes Nodes
+  ansible.builtin.group_by:
+    key: k8s_{{ kubernetes_role }}
+
+- debug:
+    msg: "{{ groups['k8s_control_plane'] }}"
+
 # Set up Cilium Client.
 - include_tasks: cilium-client-setup.yml
   when:
-    - kubernetes_role == 'control_plane'
+    - inventory_hostname is in groups['k8s_control_plane']
     - kubernetes_pod_network.cni == 'cilium'
 
 # Set up hubble Client.
 - include_tasks: hubble-client-setup.yml
   when:
-    - kubernetes_role == 'control_plane'
+    - inventory_hostname is in groups['k8s_control_plane']
     - kubernetes_pod_network.cni == 'cilium'
     - kubernetes_cilium_hubble_client
     - kubernetes_cilium_values.hubble.relay.enabled is defined
@@ -51,13 +58,20 @@
 
 # Set up control plane.
 - include_tasks: control-plane-setup.yml
-  when: kubernetes_role == 'control_plane'
+  when: inventory_hostname == groups['k8s_control_plane'][0]
+
+# Set up nodes.
+- name: Get the kubeadm join new master certificate key.
+  command: kubeadm init phase upload-certs --upload-certs | tail -1
+  changed_when: false
+  when: inventory_hostname == groups['k8s_control_plane'][0]
+  register: kubernetes_certificate_result
 
 # Set up nodes.
 - name: Get the kubeadm join command from the Kubernetes control plane.
   command: kubeadm token create --print-join-command
   changed_when: false
-  when: kubernetes_role == 'control_plane'
+  when: inventory_hostname == groups['k8s_control_plane'][0]
   register: kubernetes_join_command_result
 
 - name: Set the kubeadm join command globally.
@@ -70,5 +84,19 @@
   delegate_facts: true
   with_items: "{{ groups['all'] }}"
 
+- name: Set the kubeadm join certificate globally.
+  set_fact:
+    kubernetes_certificate: >
+      {{ kubernetes_certificate_result.stdout }}
+  when: kubernetes_certificate_result.stdout is defined
+  delegate_to: "{{ item }}"
+  delegate_facts: true
+  with_items: "{{ groups['all'] }}"
+
 - include_tasks: node-setup.yml
   when: kubernetes_role == 'node'
+
+- include_tasks: control-plane-setup-aux.yml
+  when:
+    - inventory_hostname is in groups['k8s_control_plane']
+    - inventory_hostname != groups['k8s_control_plane'][0]

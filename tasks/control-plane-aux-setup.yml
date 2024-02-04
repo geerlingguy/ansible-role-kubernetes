@@ -1,0 +1,8 @@
+---
+- name: Join control node to Kubernetes control plane.
+  shell: >
+    {{ kubernetes_join_command }}
+    --control-plane --certificate-key
+    {{ kubernetes_certificate }}
+    creates=/etc/kubernetes/kubelet.conf
+  tags: ["skip_ansible_lint"]

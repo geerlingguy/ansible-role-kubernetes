@@ -96,7 +96,7 @@
 - include_tasks: node-setup.yml
   when: kubernetes_role == 'node'
 
-- include_tasks: control-plane-setup-aux.yml
+- include_tasks: control-plane-aux-setup.yml
   when:
     - inventory_hostname is in groups['k8s_control_plane']
     - inventory_hostname != groups['k8s_control_plane'][0]

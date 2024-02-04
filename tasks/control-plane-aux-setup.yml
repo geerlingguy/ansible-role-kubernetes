@@ -1,6 +1,6 @@
 ---
 - name: Join control node to Kubernetes control plane.
-  shell: >
-    {{ kubernetes_join_command }} --control-plane --certificate-key {{ kubernetes_certificate }} --ignore-preflight-errors='all'
-    creates=/etc/kubernetes/kubelet.conf
+  command: "{{ kubernetes_join_command }} --control-plane --certificate-key {{ kubernetes_certificate }} --ignore-preflight-errors='all'"
+  args:
+    creates: /etc/kubernetes/kubelet.conf
   tags: ["skip_ansible_lint"]

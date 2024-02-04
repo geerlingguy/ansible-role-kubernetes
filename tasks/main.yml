@@ -62,7 +62,7 @@
 
 # Set up nodes.
 - name: Get the kubeadm join new master certificate key.
-  command: kubeadm init phase upload-certs --upload-certs | tail -n 1
+  shell: set -o pipefail && kubeadm init phase upload-certs --upload-certs | tail --lines 1
   changed_when: false
   when: inventory_hostname == groups['k8s_control_plane'][0]
   register: kubernetes_certificate_result

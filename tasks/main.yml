@@ -102,3 +102,5 @@
   when:
     - inventory_hostname is in groups['k8s_control_plane']
     - inventory_hostname != groups['k8s_control_plane'][0]
+    - inventory_hostname == item
+  loop: groups['k8s_control_plane']

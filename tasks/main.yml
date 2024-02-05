@@ -106,12 +106,6 @@
   loop: "{{ groups['k8s_control_plane'] }}"
 
 - name: Allow pods on control plane (if configured).
-  command: "kubectl taint nodes --all node-role.kubernetes.io/control-plane-"
-  when:
-    - kubernetes_allow_pods_on_control_plane | bool
-    - not kubernetes_init_stat.stat.exists
-
-- name: Allow pods on control plane (if configured).
   command: "kubectl taint nodes {{ item.inventory_hostname_short }} node-role.kubernetes.io/control-plane-"
   register: taint_removed
   until: >
@@ -123,5 +117,5 @@
   delay: 5
   loop: "{{ groups['k8s_control_plane'] }}"
   when:
-    - join_ctrl_plane.changed
+    - kubernetes_allow_pods_on_control_plane | bool
     - inventory_hostname == groups['k8s_control_plane'][0]

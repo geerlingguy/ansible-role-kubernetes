@@ -104,3 +104,9 @@
     - inventory_hostname != groups['k8s_control_plane'][0]
     - inventory_hostname == item
   loop: "{{ groups['k8s_control_plane'] }}"
+
+- name: Allow pods on control plane (if configured).
+  command: "kubectl taint nodes --all node-role.kubernetes.io/control-plane-"
+  when:
+    - kubernetes_allow_pods_on_control_plane | bool
+    - not kubernetes_init_stat.stat.exists

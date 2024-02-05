@@ -1,6 +1,15 @@
 ---
 - name: Join control node to Kubernetes control plane.
   command: "{{ kubernetes_join_command }} --control-plane --apiserver-advertise-address {{ kubernetes_apiserver_advertise_address }} --apiserver-bind-port 6443 --certificate-key {{ kubernetes_certificate }} --ignore-preflight-errors='all'"
+  register: join_ctrl_plane
   args:
     creates: /etc/kubernetes/kubelet.conf
   tags: ["skip_ansible_lint"]
+
+- name: Allow pods on control plane (if configured).
+  command: "kubectl taint nodes {{ inventory_hostname_short }} node-role.kubernetes.io/control-plane-"
+  register: taint_removed
+  changed_when: "'removed' in taint_removed.stdout"
+  when:
+    - kubernetes_allow_pods_on_control_plane | bool
+    - join_ctrl_plane.changed

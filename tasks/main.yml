@@ -110,3 +110,17 @@
   when:
     - kubernetes_allow_pods_on_control_plane | bool
     - not kubernetes_init_stat.stat.exists
+
+- name: Allow pods on control plane (if configured).
+  command: "kubectl taint nodes --all node-role.kubernetes.io/control-plane-"
+  register: taint_removed
+  until: >
+    ("untainted" in taint_removed.stdout) or
+    ("not found" in taint_removed.stdout)
+  changed_when: "'untainted' in taint_removed.stdout"
+  failed_when: false
+  retries: 100
+  delay: 5
+  when:
+    - join_ctrl_plane.changed
+    - inventory_hostname == groups['k8s_control_plane'][0]

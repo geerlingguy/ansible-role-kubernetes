@@ -190,11 +190,3 @@
   register: weave_result
   changed_when: "'created' in weave_result.stdout"
   when: kubernetes_pod_network.cni == 'weave'
-
-# TODO: Check if taint exists with something like `kubectl describe nodes`
-# instead of using kubernetes_init_stat.stat.exists check.
-- name: Allow pods on control plane (if configured).
-  command: "kubectl taint nodes --all node-role.kubernetes.io/control-plane-"
-  when:
-    - kubernetes_allow_pods_on_control_plane | bool
-    - not kubernetes_init_stat.stat.exists

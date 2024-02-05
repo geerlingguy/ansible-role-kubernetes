@@ -5,17 +5,3 @@
   args:
     creates: /etc/kubernetes/kubelet.conf
   tags: ["skip_ansible_lint"]
-
-- name: Allow pods on control plane (if configured).
-  command: "kubectl taint nodes {{ inventory_hostname_short }} node-role.kubernetes.io/control-plane-"
-  register: taint_removed
-  until: >
-    ("untainted" in taint_removed.stdout) or
-    ("not found" in taint_removed.stdout)
-  changed_when: "'untainted' in taint_removed.stdout"
-  failed_when: false
-  retries: 100
-  delay: 5
-  when:
-    - kubernetes_allow_pods_on_control_plane | bool
-    - join_ctrl_plane.changed

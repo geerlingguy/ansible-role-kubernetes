@@ -38,9 +38,6 @@
   ansible.builtin.group_by:
     key: k8s_{{ kubernetes_role }}
 
-- debug:
-    msg: "{{ groups['k8s_control_plane'] }}"
-
 # Set up Cilium Client.
 - include_tasks: cilium-client-setup.yml
   when:

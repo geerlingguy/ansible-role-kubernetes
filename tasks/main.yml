@@ -110,7 +110,7 @@
   register: taint_removed
   until: >
     ("untainted" in taint_removed.stdout) or
-    ("not found" in taint_removed.stdout)
+    ("not found" in taint_removed.stderr)
   changed_when: "'untainted' in taint_removed.stdout"
   failed_when: false
   retries: 100

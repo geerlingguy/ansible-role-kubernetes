@@ -5,3 +5,29 @@
   args:
     creates: /etc/kubernetes/kubelet.conf
   tags: ["skip_ansible_lint"]
+
+- name: Ensure .kube directory exists.
+  file:
+    path: ~/.kube
+    state: directory
+    mode: 0755
+
+- name: Symlink the kubectl admin.conf to ~/.kube/conf.
+  file:
+    src: /etc/kubernetes/admin.conf
+    dest: ~/.kube/config
+    state: link
+    mode: 0644
+
+- name: Allow pods on control plane (if configured).
+  command: "kubectl taint nodes {{ inventory_hostname }} node-role.kubernetes.io/control-plane-"
+  register: taint_removed
+  until: >
+    ("untainted" in taint_removed.stdout) or
+    ("not found" in taint_removed.stderr)
+  changed_when: "'untainted' in taint_removed.stdout"
+  failed_when: false
+  retries: 100
+  delay: 5
+  when:
+    - kubernetes_allow_pods_on_control_plane | bool

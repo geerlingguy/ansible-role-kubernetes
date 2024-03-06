@@ -16,8 +16,8 @@
     signed_by: "{{ kubernetes_apt_repository }}/Release.key"
   register: kubernetes_repository
 
-- name: 'Update Apt cache.'
-  ansible.builtin.apt:
+- name: Update Apt cache.
+  apt:
     update_cache: true
   when: kubernetes_repository.changed
 

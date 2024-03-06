@@ -1,12 +1,3 @@
 ---
 procps_package: procps-ng
 kubelet_environment_file_path: /etc/sysconfig/kubelet
-kubernetes_packages:
-  - name: kubelet-{{ kubernetes_version_rhel_package }}-0
-    state: present
-  - name: kubectl-{{ kubernetes_version_rhel_package }}-0
-    state: present
-  - name: kubeadm-{{ kubernetes_version_rhel_package }}-0
-    state: present
-  - name: kubernetes-cni
-    state: present

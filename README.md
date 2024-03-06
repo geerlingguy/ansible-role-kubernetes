@@ -140,12 +140,10 @@ kubernetes_ignore_preflight_errors: 'all'
 Options passed to `kubeadm init` when initializing the Kubernetes control plane. The `kubernetes_apiserver_advertise_address` defaults to `ansible_default_ipv4.address` if it's left empty.
 
 ```yaml
-kubernetes_apt_release_channel: "stable"
-kubernetes_apt_keyring_file: "/etc/apt/keyrings/kubernetes-apt-keyring.asc"
-kubernetes_apt_repository: "deb [signed-by={{ kubernetes_apt_keyring_file }}] https://pkgs.k8s.io/core:/{{ kubernetes_apt_release_channel }}:/v{{ kubernetes_version }}/deb/ /"
+kubernetes_apt_repository: "https://pkgs.k8s.io/core:/stable:/v{{ kubernetes_version }}/deb/"
 ```
 
-Apt repository options for Kubernetes installation.
+Apt repository option for Kubernetes installation.
 
 ```yaml
 kubernetes_yum_base_url: "https://pkgs.k8s.io/core:/stable:/v{{ kubernetes_version }}/rpm/"

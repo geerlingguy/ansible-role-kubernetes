@@ -19,7 +19,7 @@
 - name: 'Update Apt cache.'
   ansible.builtin.apt:
     update_cache: true
-    when: kubernetes_repository.changed
+  when: kubernetes_repository.changed
 
 - name: Add Kubernetes apt preferences file to pin a version.
   template:

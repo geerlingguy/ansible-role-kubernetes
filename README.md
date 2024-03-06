@@ -148,11 +148,8 @@ kubernetes_apt_ignore_key_error: false
 Apt repository options for Kubernetes installation.
 
 ```yaml
-kubernetes_yum_arch: x86_64
-kubernetes_yum_base_url: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-{{ kubernetes_yum_arch }}"
-kubernetes_yum_gpg_key:
-  - https://packages.cloud.google.com/yum/doc/yum-key.gpg
-  - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+kubernetes_yum_base_url: "https://pkgs.k8s.io/core:/stable:/v{{ kubernetes_version }}/rpm/"
+kubernetes_yum_gpg_key: "https://pkgs.k8s.io/core:/stable:/v{{ kubernetes_version }}/rpm/repodata/repomd.xml.key"
 kubernetes_yum_gpg_check: true
 kubernetes_yum_repo_gpg_check: true
 ```

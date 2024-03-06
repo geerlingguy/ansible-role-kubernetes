@@ -11,10 +11,9 @@
 
 - name: Add Kubernetes GPG keys.
   rpm_key:
-    key: "{{ item }}"
+    key: "{{ kubernetes_yum_gpg_key }}"
     state: present
   register: kubernetes_rpm_key
-  with_items: "{{ kubernetes_yum_gpg_key }}"
 
 - name: Make cache if Kubernetes GPG key changed.
   command: "yum -q makecache -y --disablerepo='*' --enablerepo='kubernetes'"

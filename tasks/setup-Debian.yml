@@ -14,6 +14,12 @@
     uris: "{{ kubernetes_apt_repository }}"
     suites: /
     signed_by: "{{ kubernetes_apt_repository }}/Release.key"
+  register: kubernetes_repository
+
+- name: 'Update Apt cache.'
+  ansible.builtin.apt:
+    update_cache: true
+    when: kubernetes_repository.changed
 
 - name: Add Kubernetes apt preferences file to pin a version.
   template:

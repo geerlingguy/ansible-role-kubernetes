@@ -23,10 +23,10 @@
 - include_tasks: kubelet-setup.yml  # deprecated
   when: kubernetes_kubelet_extra_args|length > 0
 
-- name: Ensure kubelet is started and enabled at boot.
+- name: Ensure kubelet is stopped, but enabled at boot.
   service:
     name: kubelet
-    state: started
+    state: stopped
     enabled: true
 
 - name: Check if Kubernetes has already been initialized.

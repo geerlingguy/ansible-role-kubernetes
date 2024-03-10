@@ -1,6 +1,6 @@
 ---
 procps_package: procps-ng
-kubelet_environment_file_path: /etc/default/kubelet
+kubelet_environment_file_path: /etc/kubernetes/kubelet.env
 kubernetes_packages:
   - name: kubelet
     state: present

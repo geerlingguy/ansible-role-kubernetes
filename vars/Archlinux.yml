@@ -1,3 +1,12 @@
 ---
 procps_package: procps-ng
 kubelet_environment_file_path: /etc/default/kubelet
+kubernetes_packages:
+  - name: kubelet
+    state: present
+  - name: kubectl
+    state: present
+  - name: kubeadm
+    state: present
+  - name: cni-plugins
+    state: present

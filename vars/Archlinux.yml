@@ -1,0 +1,3 @@
+---
+procps_package: procps-ng
+kubelet_environment_file_path: /etc/default/kubelet

@@ -6,16 +6,28 @@
       - ca-certificates
     state: present
 
-- name: Add Kubernetes apt key.
-  apt_key:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-    state: present
-  register: add_repository_key
-  ignore_errors: "{{ kubernetes_apt_ignore_key_error }}"
+- name: Prepare apt keyring directory.
+  ansible.builtin.file:
+    path: "{{ kubernetes_apt_keyring_file | dirname }}"
+    state: directory
+    mode: 0755
+
+- name: Get Kubernetes apt key.
+  ansible.builtin.get_url:
+    url: "https://pkgs.k8s.io/core:/{{ kubernetes_apt_release_channel }}:/v{{ kubernetes_version }}/deb/Release.key"
+    dest: "{{ kubernetes_apt_keyring_file }}"
+    mode: '0644'
+    force: true
+
+- name: Be sure deprecated Kubernetes repository is absent.
+  file:
+    path: "/etc/apt/sources.list.d/apt_kubernetes_io.list"
+    state: absent
 
 - name: Add Kubernetes repository.
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "{{ kubernetes_apt_repository }}"
+    filename: pkgs_k8s_io
     state: present
     update_cache: true
 

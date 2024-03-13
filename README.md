@@ -140,19 +140,16 @@ kubernetes_ignore_preflight_errors: 'all'
 Options passed to `kubeadm init` when initializing the Kubernetes control plane. The `kubernetes_apiserver_advertise_address` defaults to `ansible_default_ipv4.address` if it's left empty.
 
 ```yaml
-kubernetes_apt_release_channel: main
-kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-xenial {{ kubernetes_apt_release_channel }}"
-kubernetes_apt_ignore_key_error: false
+kubernetes_apt_release_channel: "stable"
+kubernetes_apt_keyring_file: "/etc/apt/keyrings/kubernetes-apt-keyring.asc"
+kubernetes_apt_repository: "deb [signed-by={{ kubernetes_apt_keyring_file }}] https://pkgs.k8s.io/core:/{{ kubernetes_apt_release_channel }}:/v{{ kubernetes_version }}/deb/ /"
 ```
 
 Apt repository options for Kubernetes installation.
 
 ```yaml
-kubernetes_yum_arch: x86_64
-kubernetes_yum_base_url: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-{{ kubernetes_yum_arch }}"
-kubernetes_yum_gpg_key:
-  - https://packages.cloud.google.com/yum/doc/yum-key.gpg
-  - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+kubernetes_yum_base_url: "https://pkgs.k8s.io/core:/stable:/v{{ kubernetes_version }}/rpm/"
+kubernetes_yum_gpg_key: "https://pkgs.k8s.io/core:/stable:/v{{ kubernetes_version }}/rpm/repodata/repomd.xml.key"
 kubernetes_yum_gpg_check: true
 kubernetes_yum_repo_gpg_check: true
 ```

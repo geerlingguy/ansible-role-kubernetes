@@ -9,8 +9,8 @@ kubernetes_packages:
   - name: kubernetes-cni
     state: present
 
-kubernetes_version: '1.25'
-kubernetes_version_rhel_package: '1.25.1'
+kubernetes_version: '1.29'
+kubernetes_version_rhel_package: '1.29.2'
 
 kubernetes_role: control_plane
 
@@ -54,7 +54,7 @@ kubernetes_ignore_preflight_errors: 'all'
 #kubernetes_apt_release_channel: main
 ## Note that xenial repo is used for all Debian derivatives at this time.
 #kubernetes_apt_repository: "deb http://apt.kubernetes.io/ kubernetes-xenial {{ kubernetes_apt_release_channel }}"
-kubernetes_apt_repository: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.26/deb/ /"
+kubernetes_apt_repository: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v{{ kubernetes_version }}/deb/ /"
 kubernetes_apt_ignore_key_error: false
 
 kubernetes_yum_arch: '$basearch'

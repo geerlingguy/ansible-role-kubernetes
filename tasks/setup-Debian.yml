@@ -4,32 +4,22 @@
     name:
       - apt-transport-https
       - ca-certificates
+      - python3-debian
     state: present
-
-- name: Prepare apt keyring directory.
-  ansible.builtin.file:
-    path: "{{ kubernetes_apt_keyring_file | dirname }}"
-    state: directory
-    mode: 0755
-
-- name: Get Kubernetes apt key.
-  ansible.builtin.get_url:
-    url: "https://pkgs.k8s.io/core:/{{ kubernetes_apt_release_channel }}:/v{{ kubernetes_version }}/deb/Release.key"
-    dest: "{{ kubernetes_apt_keyring_file }}"
-    mode: '0644'
-    force: true
-
-- name: Be sure deprecated Kubernetes repository is absent.
-  file:
-    path: "/etc/apt/sources.list.d/apt_kubernetes_io.list"
-    state: absent
 
 - name: Add Kubernetes repository.
-  ansible.builtin.apt_repository:
-    repo: "{{ kubernetes_apt_repository }}"
-    filename: pkgs_k8s_io
-    state: present
+  deb822_repository:
+    name: kubernetes
+    types: deb
+    uris: "{{ kubernetes_apt_repository }}"
+    suites: /
+    signed_by: "{{ kubernetes_apt_repository }}/Release.key"
+  register: kubernetes_repository
+
+- name: Update Apt cache.
+  apt:
     update_cache: true
+  when: kubernetes_repository.changed
 
 - name: Add Kubernetes apt preferences file to pin a version.
   template:

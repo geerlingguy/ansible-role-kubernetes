@@ -9,39 +9,6 @@
     src: "kubeadm-kubelet-config.j2"
     dest: "{{ kubernetes_kubeadm_kubelet_config_file_path }}"
 
-- name: Determine if we are replacing kube-proxy with cilium
-  set_fact: replace_kube_proxy="{{ (kubernetes_pod_network.cni == 'cilium') and
-    (kubernetes_cilium_values is defined) and
-    (kubernetes_cilium_values.kubeProxyReplacement is defined) and
-    (kubernetes_cilium_values.kubeProxyReplacement) | bool }}"
-
-- name: Determine if we installing Gateway API
-  set_fact: install_gateway_api="{{ (replace_kube_proxy) and
-    (kubernetes_cilium_values.gatewayAPI.enabled is defined) and
-    (kubernetes_cilium_values.gatewayAPI.enabled)| bool }}"
-
-- name: Initialize Kubernetes control plane with kubeadm init
-  command: >
-    kubeadm init
-    --config {{ kubernetes_kubeadm_kubelet_config_file_path }}
-    {{ kubernetes_kubeadm_init_extra_opts }}
-  register: kubeadmin_init
-  when:
-    - not kubernetes_init_stat.stat.exists
-    - kubernetes_ignore_preflight_errors is not defined
-    - not replace_kube_proxy
-
-- name: Initialize Kubernetes control plane with kubeadm init and ignore_preflight_errors
-  command: >
-    kubeadm init
-    --config {{ kubernetes_kubeadm_kubelet_config_file_path }}
-    --ignore-preflight-errors={{ kubernetes_ignore_preflight_errors }}
-    {{ kubernetes_kubeadm_init_extra_opts }}
-  register: kubeadmin_init
-  when:
-    - not kubernetes_init_stat.stat.exists
-    - kubernetes_ignore_preflight_errors is defined
-    - not replace_kube_proxy
 
 - name: Initialize Kubernetes control plane with kubeadm init without kube-proxy
   command: >
@@ -53,7 +20,6 @@
   when:
     - not kubernetes_init_stat.stat.exists
     - kubernetes_ignore_preflight_errors is not defined
-    - replace_kube_proxy
 
 - name: Initialize Kubernetes control plane with kubeadm init without kube-proxy and ignore_preflight_errors
   command: >
@@ -66,7 +32,6 @@
   when:
     - not kubernetes_init_stat.stat.exists
     - kubernetes_ignore_preflight_errors is defined
-    - replace_kube_proxy
 
 - name: Print the init output to screen.
   debug:
@@ -120,19 +85,17 @@
   delay: 5
 
 - name: Install Prerequisite CRDs for Cilium Gateway API support.
-  when: install_gateway_api
   register: gateway_crds
   changed_when: "'created' in gateway_crds.stdout"
   command: "kubectl apply -f {{ item }}"
   loop:
-    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
-    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
-    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/experimental/gateway.networking.k8s.io_httproutes.yaml
-    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
-    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/experimental/gateway.networking.k8s.io_grpcroutes.yaml
-    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
-    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/experimental/gateway.networking.k8s.io_tcproutes.yaml
-    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.0.0/config/crd/experimental/gateway.networking.k8s.io_udproutes.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/experimental/gateway.networking.k8s.io_httproutes.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
+    - https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+
 
 - name: Configure Cilium networking
   command: >
@@ -143,63 +106,9 @@
   when:
     - kubernetes_pod_network.cni == 'cilium'
     - not kubernetes_init_stat.stat.exists
-    - not replace_kube_proxy
   register: cilium_result
   changed_when: "'Error' not in cilium_result.stdout"
   until: cilium_result is not failed
   retries: 20
   delay: 5
 
-- name: Configure Cilium networking and replace kube-proxy
-  command: >
-    /usr/local/bin/cilium install
-    --version {{ kubernetes_cilium_version }}
-    --datapath-mode {{ kubernetes_cilium_datapath }}
-    --values /tmp/cilium_helm.yaml
-    --set k8sServiceHost="{{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}"
-    --set k8sServicePort=6443
-  when:
-    - kubernetes_pod_network.cni == 'cilium'
-    - not kubernetes_init_stat.stat.exists
-    - replace_kube_proxy
-
-  register: cilium_result
-  changed_when: "'Error' not in cilium_result.stdout"
-  until: cilium_result is not failed
-  retries: 20
-  delay: 5
-
-- name: Configure Flannel networking.
-  command: "kubectl apply -f {{ kubernetes_flannel_manifest_file }}"
-  register: flannel_result
-  changed_when: "'created' in flannel_result.stdout"
-  when: kubernetes_pod_network.cni == 'flannel'
-  until: flannel_result is not failed
-  retries: 12
-  delay: 5
-
-- name: Configure Calico networking.
-  command: "kubectl apply -f {{ kubernetes_calico_manifest_file }}"
-  register: calico_result
-  changed_when: "'created' in calico_result.stdout"
-  when: kubernetes_pod_network.cni == 'calico'
-  until: calico_result is not failed
-  retries: 12
-  delay: 5
-
-- name: Get Kubernetes version for Weave installation.
-  shell: kubectl version | base64 | tr -d '\n'
-  changed_when: false
-  register: kubectl_version
-  when: kubernetes_pod_network.cni == 'weave'
-  until: kubectl_version is not failed
-  retries: 12
-  delay: 5
-
-- name: Configure Weave networking.
-  command: "{{ item }}"
-  with_items:
-    - "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version={{ kubectl_version.stdout_lines[0] }}"
-  register: weave_result
-  changed_when: "'created' in weave_result.stdout"
-  when: kubernetes_pod_network.cni == 'weave'

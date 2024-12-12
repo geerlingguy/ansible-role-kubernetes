@@ -1,13 +1,13 @@
 ---
 kubernetes_packages:
-  - name: kubelet
-    state: present
-  - name: kubectl
-    state: present
-  - name: kubeadm
-    state: present
-  - name: kubernetes-cni
-    state: present
+- name: kubelet
+  state: present
+- name: kubectl
+  state: present
+- name: kubeadm
+  state: present
+- name: kubernetes-cni
+  state: present
 
 kubernetes_version: '1.25'
 kubernetes_version_rhel_package: '1.25.1'
@@ -32,6 +32,8 @@ kubernetes_kubeadm_kubelet_config_file_path: '/etc/kubernetes/kubeadm-kubelet-co
 kubernetes_config_kubelet_configuration:
   cgroupDriver: "systemd"
 
+kubernetes_config_kubelet_configuration_api_version: kubelet.config.k8s.io/v1beta1
+
 kubernetes_config_init_configuration:
   localAPIEndpoint:
     advertiseAddress: "{{ kubernetes_apiserver_advertise_address | default(ansible_default_ipv4.address, true) }}"
@@ -40,12 +42,18 @@ kubernetes_config_init_configuration:
 #    ignorePreflightErrors:
 #      - all
 
+kubernetes_config_init_configuration_api_version: kubeadm.k8s.io/v1beta4
+
 kubernetes_config_cluster_configuration:
   networking:
     podSubnet: "{{ kubernetes_pod_network.cidr }}"
   kubernetesVersion: "{{ kubernetes_version_kubeadm }}"
 
+kubernetes_config_cluster_configuration_api_version: kubeadm.k8s.io/v1beta4
+
 kubernetes_config_kube_proxy_configuration: {}
+
+kubernetes_config_kube_proxy_configuration_api_version: kubeproxy.config.k8s.io/v1alpha1
 
 kubernetes_apiserver_advertise_address: ''
 kubernetes_version_kubeadm: 'stable-{{ kubernetes_version }}'

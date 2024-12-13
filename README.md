@@ -141,8 +141,7 @@ Options passed to `kubeadm init` when initializing the Kubernetes control plane.
 
 ```yaml
 kubernetes_apt_release_channel: "stable"
-kubernetes_apt_keyring_file: "/etc/apt/keyrings/kubernetes-apt-keyring.asc"
-kubernetes_apt_repository: "deb [signed-by={{ kubernetes_apt_keyring_file }}] https://pkgs.k8s.io/core:/{{ kubernetes_apt_release_channel }}:/v{{ kubernetes_version }}/deb/ /"
+kubernetes_apt_repository: "https://pkgs.k8s.io/core:/{{ kubernetes_apt_release_channel }}:/v{{ kubernetes_version }}/deb/"
 ```
 
 Apt repository options for Kubernetes installation.

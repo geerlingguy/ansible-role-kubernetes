@@ -1,6 +1,6 @@
 # Ansible Role: Kubernetes
 
-[![CI](https://github.com/geerlingguy/ansible-role-kubernetes/workflows/CI/badge.svg?event=push)](https://github.com/geerlingguy/ansible-role-kubernetes/actions?query=workflow%3ACI)
+[![CI](https://github.com/geerlingguy/ansible-role-kubernetes/actions/workflows/ci.yml/badge.svg)](https://github.com/geerlingguy/ansible-role-kubernetes/actions/workflows/ci.yml)
 
 An Ansible Role that installs [Kubernetes](https://kubernetes.io) on Linux.
 

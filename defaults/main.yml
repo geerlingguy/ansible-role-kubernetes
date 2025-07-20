@@ -24,6 +24,7 @@ kubernetes_pod_network:
   # Flannel CNI.
   cni: 'flannel'
   cidr: '10.244.0.0/16'
+  serviceCidr: '10.96.0.0/12'
   # Calico CNI.
   # cni: 'calico'
   # cidr: '192.168.0.0/16'
@@ -43,6 +44,7 @@ kubernetes_config_init_configuration:
 kubernetes_config_cluster_configuration:
   networking:
     podSubnet: "{{ kubernetes_pod_network.cidr }}"
+    serviceSubnet: "{{ kubernetes_pod_network.serviceCidr }}"
   kubernetesVersion: "{{ kubernetes_version_kubeadm }}"
 
 kubernetes_config_kube_proxy_configuration: {}

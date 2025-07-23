@@ -16,6 +16,12 @@
     - net.ipv4.ip_forward
     - net.ipv6.conf.all.forwarding
 
+- name: Load module br_netfilter
+  modprobe:
+    name: br_netfilter
+    state: present
+    persistent: present
+
 # See: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
 - name: Let iptables see bridged traffic.
   sysctl:

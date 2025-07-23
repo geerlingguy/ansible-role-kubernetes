@@ -7,6 +7,15 @@
     ansible_distribution != 'Debian'
     or ansible_distribution_major_version | int < 10
 
+- name: Activate forwarding
+  sysctl:
+    name: "{{ item }}"
+    value: '1'
+    state: present
+  loop:
+    - net.ipv4.ip_forward
+    - net.ipv6.conf.all.forwarding
+
 # See: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
 - name: Let iptables see bridged traffic.
   sysctl:

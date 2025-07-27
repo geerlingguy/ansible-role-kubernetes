@@ -1,20 +1,20 @@
 ---
-apiVersion: kubeadm.k8s.io/v1beta3
+apiVersion: kubeadm.k8s.io/{{ kubernetes_config_kubeadm_apiversion }}
 kind: InitConfiguration
 {{ kubernetes_config_init_configuration | to_nice_yaml }}
 ---
-apiVersion: kubeadm.k8s.io/v1beta3
+apiVersion: kubeadm.k8s.io/{{ kubernetes_config_kubeadm_apiversion }}
 kind: ClusterConfiguration
 {{ kubernetes_config_cluster_configuration | to_nice_yaml }}
 {% if kubernetes_config_kubelet_configuration|length > 0 %}
 ---
-apiVersion: kubelet.config.k8s.io/v1beta1
+apiVersion: kubelet.config.k8s.io/{{ kubenetes_config_kubelet_apiversion }}
 kind: KubeletConfiguration
 {{ kubernetes_config_kubelet_configuration | to_nice_yaml }}
 {% endif %}
 {% if kubernetes_config_kube_proxy_configuration|length > 0 %}
 ---
-apiVersion: kubeproxy.config.k8s.io/v1alpha1
+apiVersion: kubeproxy.config.k8s.io/{{ kubernetes_config_kubeproxy_apiversion }}
 kind: KubeProxyConfiguration
 {{ kubernetes_config_kube_proxy_configuration | to_nice_yaml }}
 {% endif %}

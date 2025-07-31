@@ -12,6 +12,7 @@
     name: br_netfilter
     state: present
     persistent: present
+  when: not ansible_virtualization_type == "docker"
 
 # See: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
 - name: Let iptables see bridged traffic.

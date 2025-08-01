@@ -7,6 +7,7 @@
     kubernetes_pod_network:
       cni: 'calico'
       cidr: '192.168.0.0/16'
+      serviceCidr: '10.96.0.0/12'
 
     # Allow swap in test environments (hard to control in some envs).
     kubernetes_config_kubelet_configuration:

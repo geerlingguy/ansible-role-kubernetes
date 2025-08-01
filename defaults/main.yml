@@ -9,8 +9,8 @@ kubernetes_packages:
   - name: kubernetes-cni
     state: present
 
-kubernetes_version: '1.32'
-kubernetes_version_rhel_package: '1.32'
+kubernetes_version: '1.33'
+kubernetes_version_rhel_package: '1.33'
 
 kubernetes_role: control_plane
 
@@ -30,7 +30,7 @@ kubernetes_pod_network:
 
 kubernetes_kubeadm_kubelet_config_file_path: '/etc/kubernetes/kubeadm-kubelet-config.yaml'
 
-kubernetes_config_kubeadm_apiversion: v1beta3
+kubernetes_config_kubeadm_apiversion: v1beta4
 kubenetes_config_kubelet_apiversion: v1beta1
 kubernetes_config_kubeproxy_apiversion: v1alpha1
 

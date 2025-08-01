@@ -7,6 +7,13 @@
     ansible_distribution != 'Debian'
     or ansible_distribution_major_version | int < 10
 
+- name: Ensure module br_netfilter is loaded
+  modprobe:
+    name: br_netfilter
+    state: present
+    persistent: present
+  when: not ansible_virtualization_type == "docker"
+
 # See: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
 - name: Let iptables see bridged traffic.
   sysctl:
@@ -17,5 +24,6 @@
     - net.bridge.bridge-nf-call-iptables
     - net.bridge.bridge-nf-call-ip6tables
   when: >
-    ansible_distribution != 'Debian'
-    or ansible_distribution_major_version | int < 10
+    ( ansible_distribution != 'Debian'
+      or ansible_distribution_major_version | int < 10
+    ) and not ansible_virtualization_type == "docker"

@@ -28,6 +28,7 @@ kubernetes_pod_network:
   # Calico CNI.
   # cni: 'calico'
   # cidr: '192.168.0.0/16'
+  # serviceCidr: '10.96.0.0/12'
 
 kubernetes_kubeadm_kubelet_config_file_path: '/etc/kubernetes/kubeadm-kubelet-config.yaml'
 

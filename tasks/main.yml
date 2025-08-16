@@ -15,6 +15,12 @@
 - include_tasks: setup-Debian.yml
   when: ansible_facts.os_family == 'Debian'
 
+- name: Ensure dependencies are installed.
+  package:
+    name: curl
+    state: present
+  failed_when: False
+
 - name: Install Kubernetes packages.
   package:
     name: "{{ item.name | default(item) }}"

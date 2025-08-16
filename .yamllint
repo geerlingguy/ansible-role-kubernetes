@@ -8,4 +8,9 @@ rules:
 
 ignore: |
   .github/workflows/stale.yml
+  .ansible-lint
+  .cache
+  .github
+  .poetry
+  .tox
   .travis.yml

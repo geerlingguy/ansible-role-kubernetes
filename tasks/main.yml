@@ -16,13 +16,13 @@
   when: ansible_facts.os_family == 'Debian'
 
 - name: Ensure dependencies are installed.
-  package:
+  ansible.builtin.package:
     name: curl
     state: present
   failed_when: False
 
 - name: Install Kubernetes packages.
-  package:
+  ansible.builtin.package:
     name: "{{ item.name | default(item) }}"
     state: "{{ item.state | default('present') }}"
   notify: restart kubelet
@@ -34,7 +34,7 @@
   when: kubernetes_kubelet_extra_args|length > 0
 
 - name: Ensure kubelet is started and enabled at boot.
-  service:
+  ansible.builtin.service:
     name: kubelet
     state: started
     enabled: true
@@ -50,13 +50,16 @@
 
 # Set up nodes.
 - name: Get the kubeadm join command from the Kubernetes control plane.
-  command: kubeadm token create --print-join-command
+  ansible.builtin.command: kubeadm token create --print-join-command
   changed_when: false
   when: kubernetes_role == 'control_plane'
   register: kubernetes_join_command_result
 
+- include_tasks: networking.yml
+  when: kubernetes_role == 'control_plane'
+
 - name: Set the kubeadm join command globally.
-  set_fact:
+  ansible.builtin.set_fact:
     kubernetes_join_command: >
       {{ kubernetes_join_command_result.stdout }}
       {{ kubernetes_join_command_extra_opts }}
@@ -67,3 +70,13 @@
 
 - include_tasks: node-setup.yml
   when: kubernetes_role == 'node'
+
+- name: restart containerd and kubelet to ensure they pick up any changes
+  ansible.builtin.service: # https://github.com/k3s-io/k3s/issues/1857#issuecomment-950154218
+    name: "{{ item }}"
+    state: restarted
+  with_items:
+    - containerd
+    - kubelet
+  when: kubernetes_role in ['control_plane', 'node']
+  become: true

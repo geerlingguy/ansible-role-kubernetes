@@ -10,3 +10,5 @@ kubernetes_packages:
     state: present
   - name: kubernetes-cni
     state: present
+  - name: ima-evm-utils
+    state: present

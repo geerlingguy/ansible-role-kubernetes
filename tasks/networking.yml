@@ -1,0 +1,71 @@
+---
+
+- name: Configure Flannel networking.
+  command: "kubectl apply -f {{ kubernetes_flannel_manifest_file }}"
+  register: flannel_result
+  changed_when: "'created' in flannel_result.stdout"
+  when: kubernetes_pod_network.cni == 'flannel'
+  until: flannel_result is not failed
+  retries: 12
+  delay: 5
+
+- name: Configure Calico crds.
+  kubernetes.core.k8s:
+    state: present
+    apply: True
+    src: "{{ kubernetes_calico_crds_file }}"
+    server_side_apply:
+      force_conflicts: True
+      field_manager: ansible
+  when: kubernetes_pod_network.cni == 'calico'
+
+- name: Configure Calico networking.
+  kubernetes.core.k8s:
+    state: present
+    apply: True
+    src: "{{ kubernetes_calico_manifest_file }}"
+    server_side_apply:
+      force_conflicts: True
+      field_manager: ansible
+  when: kubernetes_pod_network.cni == 'calico'
+
+- name: Create Calico configuration.
+  kubernetes.core.k8s:
+    state: present
+    apply: True
+    src: "{{ kubernetes_calico_configuration_file }}"
+    server_side_apply:
+      force_conflicts: True
+      field_manager: ansible
+  when: kubernetes_pod_network.cni == 'calico'
+
+- name: Install Calico ctl.
+  kubernetes.core.k8s:
+    state: present
+    apply: True
+    src: "{{ kubernetes_calicoctl_file }}"
+    server_side_apply:
+      force_conflicts: True
+      field_manager: ansible
+  when: kubernetes_pod_network.cni == 'calico'
+  register: calicoctl_result
+  until: calicoctl_result is not failed
+  retries: 12
+  delay: 5
+
+- name: Get Kubernetes version for Weave installation.
+  shell: kubectl version | base64 | tr -d '\n'
+  changed_when: false
+  register: kubectl_version
+  when: kubernetes_pod_network.cni == 'weave'
+  until: kubectl_version is not failed
+  retries: 12
+  delay: 5
+
+- name: Configure Weave networking.
+  command: "{{ item }}"
+  with_items:
+    - "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version={{ kubectl_version.stdout_lines[0] }}"
+  register: weave_result
+  changed_when: "'created' in weave_result.stdout"
+  when: kubernetes_pod_network.cni == 'weave'

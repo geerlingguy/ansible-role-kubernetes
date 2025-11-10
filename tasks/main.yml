@@ -2,7 +2,7 @@
 - name: Include OS-specific variables.
   include_vars: "{{ ansible_facts.os_family }}.yml"
   when:
-  - ansible_distribution != 'Fedora'
+   - ansible_distribution != 'Fedora'
 
 - name: Include Distribution-specific variables.
   include_vars: "{{ ansible_facts.distribution }}.yml"
@@ -76,7 +76,7 @@
     name: "{{ item }}"
     state: restarted
   with_items:
-    - containerd
-    - kubelet
+   - containerd
+   - kubelet
   when: kubernetes_role in ['control_plane', 'node']
   become: true

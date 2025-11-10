@@ -15,14 +15,14 @@
     apply: True
     src: "{{ kubernetes_calico_crds_file }}"
     server_side_apply:
-      force_conflicts: True
+      force_conflicts: true
       field_manager: ansible
   when: kubernetes_pod_network.cni == 'calico'
 
 - name: Configure Calico networking.
   kubernetes.core.k8s:
     state: present
-    apply: True
+    apply: true
     src: "{{ kubernetes_calico_manifest_file }}"
     server_side_apply:
       force_conflicts: True
@@ -32,7 +32,7 @@
 - name: Create Calico configuration.
   kubernetes.core.k8s:
     state: present
-    apply: True
+    apply: true
     src: "{{ kubernetes_calico_configuration_file }}"
     server_side_apply:
       force_conflicts: True
@@ -42,7 +42,7 @@
 - name: Install Calico ctl.
   kubernetes.core.k8s:
     state: present
-    apply: True
+    apply: true
     src: "{{ kubernetes_calicoctl_file }}"
     server_side_apply:
       force_conflicts: True

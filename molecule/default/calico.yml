@@ -34,7 +34,7 @@
 
   roles:
     - role: geerlingguy.containerd
-    - role: geerlingguy.kubernetes
+    - role: tcharl.kubernetes
 
   post_tasks:
     - name: Get cluster info.

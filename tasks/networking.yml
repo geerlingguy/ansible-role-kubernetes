@@ -12,7 +12,7 @@
 - name: Configure Calico crds.
   kubernetes.core.k8s:
     state: present
-    apply: True
+    apply: true
     src: "{{ kubernetes_calico_crds_file }}"
     server_side_apply:
       force_conflicts: true
@@ -25,7 +25,7 @@
     apply: true
     src: "{{ kubernetes_calico_manifest_file }}"
     server_side_apply:
-      force_conflicts: True
+      force_conflicts: true
       field_manager: ansible
   when: kubernetes_pod_network.cni == 'calico'
 
@@ -35,7 +35,7 @@
     apply: true
     src: "{{ kubernetes_calico_configuration_file }}"
     server_side_apply:
-      force_conflicts: True
+      force_conflicts: true
       field_manager: ansible
   when: kubernetes_pod_network.cni == 'calico'
 
@@ -45,7 +45,7 @@
     apply: true
     src: "{{ kubernetes_calicoctl_file }}"
     server_side_apply:
-      force_conflicts: True
+      force_conflicts: true
       field_manager: ansible
   when: kubernetes_pod_network.cni == 'calico'
   register: calicoctl_result

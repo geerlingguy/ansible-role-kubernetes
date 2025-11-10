@@ -23,8 +23,8 @@
 
 - name: Install Kubernetes packages.
   ansible.builtin.package:
-    name: "{{ item.name | default(item) }}"
-    state: "{{ item.state | default('present') }}"
+   name: "{{ item.name | default(item) }}"
+   state: "{{ item.state | default('present') }}"
   notify: restart kubelet
   with_items: "{{ kubernetes_packages }}"
 
@@ -35,13 +35,13 @@
 
 - name: Ensure kubelet is started and enabled at boot.
   ansible.builtin.service:
-    name: kubelet
-    state: started
-    enabled: true
+   name: kubelet
+   state: started
+   enabled: true
 
 - name: Check if Kubernetes has already been initialized.
   stat:
-    path: /etc/kubernetes/admin.conf
+   path: /etc/kubernetes/admin.conf
   register: kubernetes_init_stat
 
 # Set up control plane.
@@ -60,9 +60,9 @@
 
 - name: Set the kubeadm join command globally.
   ansible.builtin.set_fact:
-    kubernetes_join_command: >
-      {{ kubernetes_join_command_result.stdout }}
-      {{ kubernetes_join_command_extra_opts }}
+   kubernetes_join_command: >
+     {{ kubernetes_join_command_result.stdout }}
+     {{ kubernetes_join_command_extra_opts }}
   when: kubernetes_join_command_result.stdout is defined
   delegate_to: "{{ item }}"
   delegate_facts: true
@@ -72,9 +72,9 @@
   when: kubernetes_role == 'node'
 
 - name: restart containerd and kubelet to ensure they pick up any changes
-  ansible.builtin.service: # https://github.com/k3s-io/k3s/issues/1857#issuecomment-950154218
-    name: "{{ item }}"
-    state: restarted
+  ansible.builtin.service:  # https://github.com/k3s-io/k3s/issues/1857#issuecomment-950154218
+   name: "{{ item }}"
+   state: restarted
   with_items:
    - containerd
    - kubelet

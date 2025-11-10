@@ -3,4 +3,8 @@
   shell: >
     {{ kubernetes_join_command }}
     creates=/etc/kubernetes/kubelet.conf
+  register: result
+  until: result is success
+  delay: 6
+  retries: 4
   tags: ['skip_ansible_lint']

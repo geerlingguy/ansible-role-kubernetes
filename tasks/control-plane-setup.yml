@@ -40,7 +40,7 @@
 
 - name: Symlink the kubectl admin.conf to ~/.kube/conf.
   file:
-    src: /etc/kubernetes/admin.conf
+    src: /etc/kubernetes/super-admin.conf
     dest: ~/.kube/config
     state: link
     mode: 0644

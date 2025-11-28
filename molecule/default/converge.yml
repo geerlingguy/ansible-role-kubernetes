@@ -15,15 +15,15 @@
   pre_tasks:
     - name: Update apt cache.
       apt: update_cache=true cache_valid_time=600
-      when: ansible_os_family == 'Debian'
+      when: ansible_facts.os_family == 'Debian'
 
     - name: Ensure test dependencies are installed (RedHat).
       package: name=iproute state=present
-      when: ansible_os_family == 'RedHat'
+      when: ansible_facts.os_family == 'RedHat'
 
     - name: Ensure test dependencies are installed (Debian).
       package: name=iproute2 state=present
-      when: ansible_os_family == 'Debian'
+      when: ansible_facts.os_family == 'Debian'
 
     - name: Gather facts.
       action: setup

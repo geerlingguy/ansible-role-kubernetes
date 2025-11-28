@@ -4,8 +4,8 @@
     name: "{{ procps_package }}"
     state: present
   when: >
-    ansible_distribution != 'Debian'
-    or ansible_distribution_major_version | int < 10
+    ansible_facts.distribution != 'Debian'
+    or ansible_facts.distribution_major_version | int < 10
 
 - name: Ensure module br_netfilter is loaded
   modprobe:
@@ -24,6 +24,6 @@
     - net.bridge.bridge-nf-call-iptables
     - net.bridge.bridge-nf-call-ip6tables
   when: >
-    ( ansible_distribution != 'Debian'
-      or ansible_distribution_major_version | int < 10
+    ( ansible_facts.distribution != 'Debian'
+      or ansible_facts.distribution_major_version | int < 10
     ) and not ansible_virtualization_type == "docker"

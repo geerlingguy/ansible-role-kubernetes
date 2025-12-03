@@ -1,5 +1,6 @@
 *.retry
 */__pycache__
 *.pyc
+.ansible
 .cache
 

@@ -47,7 +47,18 @@
     kubernetes_join_command: >
       {{ kubernetes_join_command_result.stdout }}
       {{ kubernetes_join_command_extra_opts }}
-  when: kubernetes_join_command_result.stdout is defined
+  when: (kubernetes_join_command_result.stdout is defined) and (kubernetes_ignore_preflight_errors is not defined)
+  delegate_to: "{{ item }}"
+  delegate_facts: true
+  with_items: "{{ groups['all'] }}"
+
+- name: Set the kubeadm join command with ignore preflight errors globally.
+  set_fact:
+    kubernetes_join_command: >
+      {{ kubernetes_join_command_result.stdout }}
+      --ignore-preflight-errors={{ kubernetes_ignore_preflight_errors }}
+      {{ kubernetes_join_command_extra_opts }}
+  when: (kubernetes_join_command_result.stdout is defined) and (kubernetes_ignore_preflight_errors is defined)
   delegate_to: "{{ item }}"
   delegate_facts: true
   with_items: "{{ groups['all'] }}"

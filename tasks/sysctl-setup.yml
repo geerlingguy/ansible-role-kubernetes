@@ -7,6 +7,15 @@
     ansible_facts.distribution != 'Debian'
     or ansible_facts.distribution_major_version | int < 10
 
+- name: Activate forwarding
+  sysctl:
+    name: "{{ item }}"
+    value: '1'
+    state: present
+  loop:
+    - net.ipv4.ip_forward
+    - net.ipv6.conf.all.forwarding
+
 - name: Ensure module br_netfilter is loaded
   modprobe:
     name: br_netfilter

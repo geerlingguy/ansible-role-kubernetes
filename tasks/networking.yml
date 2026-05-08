@@ -9,6 +9,46 @@
   retries: 12
   delay: 5
 
+#- name: Create temp directory to host calico configmap
+#  changed_when: false
+#  ansible.builtin.tempfile:
+#    state: directory
+#    suffix: calico
+#  register: calico_configmap_tempdir
+#  when: kubernetes_pod_network.cni == 'calico'
+
+#- name: Copy strict calico configmap
+#  ansible.builtin.copy:
+#    src: api-server-config.yml
+#    dest: "{{ calico_configmap_tempdir.path }}/api-server-config.yml"
+#    mode: '0600'
+#  when: kubernetes_pod_network.cni == 'calico'
+#  become: true
+
+#- name: Configure tigera namespace
+#  kubernetes.core.k8s:
+#    name: tigera-operator
+#    kind: Namespace
+#    state: present
+#    wait_timeout: 200
+#    wait_sleep: 20
+#  register: tigeransresult
+#  until: "tigeransresult is not failed"
+#  when: kubernetes_pod_network.cni == 'calico'
+#  retries: 5
+#  delay: 10
+#  become: True
+
+#- name: Tweak calico operator api server port
+#  kubernetes.core.k8s:
+#    state: present
+#    apply: True
+#    src: "{{ calico_configmap_tempdir.path }}/api-server-config.yml"
+#  retries: 5
+#  delay: 10
+#  when: kubernetes_pod_network.cni == 'calico'
+#  become: true
+
 - name: Configure Calico crds.
   kubernetes.core.k8s:
     state: present

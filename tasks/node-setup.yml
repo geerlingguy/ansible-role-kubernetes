@@ -8,3 +8,4 @@
   delay: 6
   retries: 4
   tags: ['skip_ansible_lint']
+  when: kubernetes_join_command_result.stdout is defined

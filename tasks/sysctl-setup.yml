@@ -14,13 +14,6 @@
     persistent: present
   when: not ansible_virtualization_type == "docker"
 
-- name: Ensure module br_netfilter is loaded
-  modprobe:
-    name: br_netfilter
-    state: present
-    persistent: present
-  when: not ansible_virtualization_type == "docker"
-
 # See: https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#letting-iptables-see-bridged-traffic
 - name: Let iptables see bridged traffic.
   sysctl:
@@ -36,3 +29,22 @@
     )
     and (ansible_distribution != 'Fedora' or ansible_distribution_major_version | int < 34)
     and not ansible_virtualization_type == "docker"
+
+- name: Permanently allow ipv4 rp_filter on host nic
+  ansible.posix.sysctl:
+    name: net.ipv4.conf.all.rp_filter
+    value: '2'
+    sysctl_set: yes
+    state: present
+    reload: yes
+  become: yes
+
+- name: Permanently allow ipv4 default rp_filter on host nic
+  ansible.posix.sysctl:
+    name: net.ipv4.conf.default.rp_filter
+    value: '2'
+    sysctl_set: yes
+    state: present
+    reload: yes
+  become: yes
+

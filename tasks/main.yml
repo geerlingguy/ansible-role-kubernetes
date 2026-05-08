@@ -2,7 +2,7 @@
 - name: Include OS-specific variables.
   include_vars: "{{ ansible_facts.os_family }}.yml"
   when:
-   - ansible_distribution != 'Fedora'
+   - ansible_facts.distribution != 'Fedora'
 
 - name: Include Distribution-specific variables.
   include_vars: "{{ ansible_facts.distribution }}.yml"

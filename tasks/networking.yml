@@ -56,8 +56,6 @@
     state: present
     wait_timeout: 200
     wait_sleep: 20
-  register: calico-ns-created
-  until: "calico-ns-created is not failed"
   retries: 5
   delay: 10
   when: kubernetes_pod_network.cni == 'calico'

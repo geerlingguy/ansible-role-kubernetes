@@ -14,6 +14,9 @@ kubernetes_version_rhel_package: '1.37'
 
 kubernetes_version_fedora_package: "{{ kubernetes_version }}.3"
 
+kubernetes_cni_version: '1.8'
+kubernetes_fedora_qualifier: '-150500.1.1'
+kubernetes_cni_version_fedora_package: "{{ kubernetes_cni_version }}.0{{ kubernetes_fedora_qualifier }}"
 kubernetes_role: control_plane
 
 # This is deprecated. Please use kubernetes_config_kubelet_configuration instead.

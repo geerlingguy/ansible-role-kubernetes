@@ -25,7 +25,7 @@
   ansible.builtin.package:
    name: "{{ item.name | default(item) }}"
    state: "{{ item.state | default('present') }}"
-  notify: restart kubelet
+  notify: restart_kubelet
   with_items: "{{ kubernetes_packages }}"
 
 - include_tasks: sysctl-setup.yml

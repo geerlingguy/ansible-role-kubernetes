@@ -40,7 +40,7 @@ kubenetes_config_kubelet_apiversion: v1beta1
 kubernetes_config_kubeproxy_apiversion: v1alpha1
 
 kubernetes_config_kubelet_configuration:
-  cgroupDriver: "systemd"  # osgiliath change: does not work with latest kubelet api version
+  cgroupDriver: "systemd"
 
 kubernetes_config_init_configuration:
   localAPIEndpoint:

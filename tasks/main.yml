@@ -25,6 +25,8 @@
   ansible.builtin.package:
    name: "{{ item.name | default(item) }}"
    state: "{{ item.state | default('present') }}"
+  retries: 5
+  delay: 10
   notify: restart_kubelet
   with_items: "{{ kubernetes_packages }}"
 

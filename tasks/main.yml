@@ -25,8 +25,7 @@
   ansible.builtin.package:
    name: "{{ item.name | default(item) }}"
    state: "{{ item.state | default('present') }}"
-  retries: 5
-  delay: 10
+  become: true
   notify: restart_kubelet
   with_items: "{{ kubernetes_packages }}"
 
@@ -40,6 +39,7 @@
    name: kubelet
    state: started
    enabled: true
+  become: true
 
 - name: Check if Kubernetes has already been initialized.
   stat:

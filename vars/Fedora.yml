@@ -5,5 +5,5 @@ kubernetes_packages:
   - name: kubelet-{{ kubernetes_version_fedora_package }}
   - name: kubectl-{{ kubernetes_version_fedora_package }}
   - name: kubeadm-{{ kubernetes_version_fedora_package }}
-  - name: kubernetes-cni-{{ kubernetes_cni_version_fedora_package }}
+  - name: kubernetes-cni
   - name: ima-evm-utils

@@ -8,7 +8,7 @@
     state: present
 
 - name: Add Kubernetes repository.
-  deb822_repository:
+  ansible.builtin.deb822_repository:
     name: kubernetes
     types: deb
     uris: "{{ kubernetes_apt_repository }}"

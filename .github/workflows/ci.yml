@@ -45,10 +45,10 @@ jobs:
             playbook: converge.yml
           - distro: ubuntu2004
             playbook: converge.yml
-          - distro: debian11
+          - distro: debian12
             playbook: converge.yml
 
-          - distro: debian11
+          - distro: debian12
             playbook: calico.yml
 
     steps:

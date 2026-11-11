@@ -34,17 +34,16 @@
   ansible.posix.sysctl:
     name: net.ipv4.conf.all.rp_filter
     value: '2'
-    sysctl_set: yes
+    sysctl_set: true
     state: present
-    reload: yes
-  become: yes
+    reload: true
+  become: true
 
 - name: Permanently allow ipv4 default rp_filter on host nic
   ansible.posix.sysctl:
     name: net.ipv4.conf.default.rp_filter
     value: '2'
-    sysctl_set: yes
+    sysctl_set: true
     state: present
     reload: yes
   become: yes
-

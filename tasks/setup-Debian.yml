@@ -6,7 +6,6 @@
       - ca-certificates
       - python3-debian
     state: present
-
   register: add_repository_key
   ignore_errors: "{{ kubernetes_apt_ignore_key_error }}"
 

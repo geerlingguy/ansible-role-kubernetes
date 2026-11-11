@@ -10,7 +10,7 @@ name: CI
 
 defaults:
   run:
-    working-directory: 'geerlingguy.kubernetes'
+    working-directory: 'tcharl.kubernetes'
 
 jobs:
 
@@ -21,7 +21,7 @@ jobs:
       - name: Check out the codebase.
         uses: actions/checkout@v4
         with:
-          path: 'geerlingguy.kubernetes'
+          path: 'tcharl.kubernetes'
 
       - name: Set up Python 3.
         uses: actions/setup-python@v5
@@ -61,7 +61,7 @@ jobs:
       - name: Check out the codebase.
         uses: actions/checkout@v4
         with:
-          path: 'geerlingguy.kubernetes'
+          path: 'tcharl.kubernetes'
 
       - name: Set up Python 3.
         uses: actions/setup-python@v5

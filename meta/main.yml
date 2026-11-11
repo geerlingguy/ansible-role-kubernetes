@@ -3,7 +3,7 @@ dependencies: []
 
 galaxy_info:
   role_name: kubernetes
-  author: geerlingguy
+  author: tcharl
   description: Kubernetes for Linux.
   company: "Midwestern Mac, LLC"
   license: "license (BSD, MIT)"

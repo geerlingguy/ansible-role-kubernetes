@@ -161,11 +161,22 @@ kubernetes_flannel_manifest_file: https://raw.githubusercontent.com/coreos/flann
 
 Flannel manifest file to apply to the Kubernetes cluster to enable networking. You can copy your own files to your server and apply them instead, if you need to customize the Flannel networking configuration.
 
+Calico is installed in **native `projectcalico.org/v3` CRD mode** ([upstream docs](https://docs.tigera.io/calico/latest/operations/native-v3-crds)): the CRD manifest is applied before the Tigera operator, and no Calico aggregation API server is deployed. The `APIServer` custom resource (created by the configuration manifest, or by an overridden template) still applies in this mode — it deploys the validation/defaulting webhooks pod, not the retired aggregation API server.
+
 ```yaml
-kubernetes_calico_manifest_file: https://projectcalico.docs.tigera.io/manifests/calico.yaml
+calico_version: v3.33.0
+kubernetes_calico_crds_file: "https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests/v3_projectcalico_org.yaml"
+kubernetes_calico_manifest_file: "https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests/tigera-operator.yaml"
+kubernetes_calico_configuration_file: "https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests/custom-resources.yaml"
+kubernetes_calicoctl_file: "https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests/calicoctl.yaml"
 ```
 
-Calico manifest file to apply to the Kubernetes cluster (if using Calico instead of Flannel).
+Calico variable set, all derived from `calico_version`: the native v3 CRDs, the Tigera operator, the Calico custom resources (IP pool etc.), and `calicoctl`. You can copy your own files to your server and apply them instead, if you need to customize the Calico configuration.
+
+Version and CRD-set constraints:
+
+- The native v3 CRD manifest uses `MutatingAdmissionPolicy`, which requires **Kubernetes 1.34 or later**. The default manifest uses the GA `admissionregistration.k8s.io/v1` API and requires **1.36+** (the version this role pins). On 1.34/1.35, override `kubernetes_calico_crds_file` to `.../manifests/v3_projectcalico_org-v1beta1.yaml` and enable the `MutatingAdmissionPolicy` feature gate on the API server.
+- **Never install both CRD sets** — do not combine the native `projectcalico.org/v3` CRDs with the legacy `crd.projectcalico.org` (v1) CRDs (`v1_crd_projectcalico_org.yaml`). The aggregation API server those depended on is on a removal path upstream.
 
 ## Dependencies
 
@@ -183,7 +194,7 @@ None.
 
   roles:
     - geerlingguy.docker
-    - geerlingguy.kubernetes
+    - tcharl.kubernetes
 ```
 
 ### Two or more nodes (single control-plane) cluster
@@ -210,7 +221,7 @@ Playbook:
 
   roles:
     - geerlingguy.docker
-    - geerlingguy.kubernetes
+    - tcharl.kubernetes
 ```
 
 Then, log into the Kubernetes control plane, and run `kubectl get nodes` as root, and you should see a list of all the servers.

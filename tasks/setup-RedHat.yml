@@ -19,3 +19,13 @@
   command: "yum -q makecache -y --disablerepo='*' --enablerepo='kubernetes'"
   when: kubernetes_rpm_key is changed
   failed_when: false
+
+# cri-tools provides /usr/bin/crictl. geerlingguy.containerd installs containerd.io
+# only (ctr, no crictl) and the kube packages that carry cri-tools are installed
+# later, by the role's kube-install.yml — so without this the pre-pull below could
+# never execute (module exec failure: rc=ENOENT, empty stdout/stderr, silently
+# swallowed by the old failed_when: false).
+- name: Install cri-tools so the calico pre-pull can run
+  ansible.builtin.dnf:
+    name: cri-tools
+    state: present

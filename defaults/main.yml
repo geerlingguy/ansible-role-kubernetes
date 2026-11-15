@@ -77,6 +77,7 @@ kubernetes_flannel_manifest_file: https://github.com/flannel-io/flannel/releases
 
 # Calico config file.
 calico_version: v3.33.0
+kube_tigera_operator_version: v1.44.0
 kubernetes_calico_crds_file: "https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests/v3_projectcalico_org.yaml"
 kubernetes_calico_manifest_file: "https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests/tigera-operator.yaml"
 kubernetes_calico_configuration_file: "https://raw.githubusercontent.com/projectcalico/calico/{{ calico_version }}/manifests/custom-resources.yaml"

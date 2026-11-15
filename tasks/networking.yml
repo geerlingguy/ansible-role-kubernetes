@@ -15,6 +15,45 @@
     state: present
   when: kubernetes_pod_network.cni == 'calico'
 
+
+# Warm the calico image cache before converge (Travis kvm #105-#110): since the
+# tigera-operator flow the master must pull tigera/operator + calico node/calico
+# images (all quay.io) during converge, and on cold CI runners those pulls ate the
+# calico-node Ready gate budget.
+# No native ansible module for crictl pull, so: the retry condition is evaluated on
+# rc (not on a `failed` flag we neutralised, which made retries dead), and the
+# warm-up stays best-effort through the rescue instead of a silent no-op.
+# changed_when: false — pulling an already-present tag is a content-store no-op, so
+# the image cache is not configuration state.
+# Keep the tags in sync with defaults/main.yml (calico_cni_version) and the
+# tigera-operator.yaml manifest pinned by tcharl.kubernetes.
+- name: Pre-pull calico images for converge
+  block:
+    - name: Pre-pull calico images | crictl pull
+      ansible.builtin.command: "crictl pull {{ item }}"
+      loop:
+        - quay.io/tigera/operator:{{ kube_tigera_operator_version }}
+        - quay.io/calico/node:{{ calico_version }}
+        - quay.io/calico/calico:{{ calico_version}}
+      register: kvm_calico_prepull
+      until: kvm_calico_prepull.rc | default(1) == 0
+      retries: 3
+      delay: 10
+      changed_when: false
+  rescue:
+    - name: Pre-pull calico images | warn that the warm-up did not complete
+      ansible.builtin.debug:
+        msg: >-
+          Calico image pre-pull did not complete after 3 attempts
+          ({{ kvm_calico_prepull.msg | default('no result recorded') }};
+          images not pulled:
+          {{ (kvm_calico_prepull.results | default([])
+              | selectattr('failed', 'defined') | selectattr('failed')
+              | map(attribute='item') | join(', ')) or 'none recorded' }}).
+          Converge pulls the images itself; the calico-node Ready gate absorbs
+          the extra time.
+  when: kubernetes_pod_network.cni == 'calico'
+
 - name: Configure calico-system namespace
   kubernetes.core.k8s:
     name: calico-system

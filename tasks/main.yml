@@ -17,8 +17,8 @@
 
 - name: Ensure dependencies are installed.
   ansible.builtin.package:
-    name: curl
-    state: present
+   name: curl
+   state: present
   failed_when: False
 
 - name: Install Kubernetes packages.

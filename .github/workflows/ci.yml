@@ -45,10 +45,16 @@ jobs:
             playbook: converge.yml
           - distro: ubuntu2204
             playbook: converge.yml
+          - distro: ubuntu2404
+            playbook: converge.yml
+          - distro: ubuntu2604
+            playbook: converge.yml
           - distro: debian12
             playbook: converge.yml
+          - distro: debian13
+            playbook: converge.yml
 
-          - distro: debian12
+          - distro: debian13
             playbook: calico.yml
 
     steps:

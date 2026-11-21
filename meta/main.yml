@@ -14,12 +14,16 @@ galaxy_info:
         - stretch
         - buster
         - bullseye
+        - bookworm
+        - trixie
     - name: Ubuntu
       versions:
         - xenial
         - bionic
         - focal
         - jammy
+        - noble
+        - plucky
   galaxy_tags:
     - system
     - containers

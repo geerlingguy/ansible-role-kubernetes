@@ -27,8 +27,8 @@ kubernetes_packages:
 Kubernetes packages to be installed on the server. You can either provide a list of package names, or set `name` and `state` to have more control over whether the package is `present`, `absent`, `latest`, etc.
 
 ```yaml
-kubernetes_version: '1.32'
-kubernetes_version_rhel_package: '1.32'
+kubernetes_version: '1.37'
+kubernetes_version_rhel_package: '1.37'
 ```
 
 The minor version of Kubernetes to install. The plain `kubernetes_version` is used to pin an apt package version on Debian, and as the Kubernetes version passed into the `kubeadm init` command (see `kubernetes_version_kubeadm`). The `kubernetes_version_rhel_package` variable must be a specific Kubernetes release, and is used to pin the version on Red Hat / CentOS servers.
@@ -73,7 +73,7 @@ kubernetes_config_kubelet_configuration:
   cgroupDriver: systemd
 ```
 
-Options to configure kubelet on any nodes in your cluster through the `kubeadm init` process. For syntax options read the [kubelet config file](https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file) and [kubelet integration](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration) documentation.
+Options to configure kubelet on any nodes in your cluster through the `kubeadm init` process. For syntax options read the [kubelet config file](https://kubernetes.io/docs/tasks/administer-cluster/kubelet-config-file) and [kubeadm integration](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/kubelet-integration) documentation.
 
 NOTE: This is the recommended way to do the kubelet-configuration. Most command-line-options are deprecated.
 
@@ -92,19 +92,19 @@ kubernetes_kubelet_extra_args: ""
 kubernetes_kubelet_extra_args_config_file: /etc/default/kubelet
 ```
 
-Extra args to pass to `kubelet` during startup. E.g. to allow `kubelet` to start up even if there is swap is enabled on your server, set this to: `"--fail-swap-on=false"`. Or to specify the node-ip advertised by `kubelet`, set this to `"--node-ip={{ ansible_host }}"`. **This option is deprecated. Please use `kubernetes_config_kubelet_configuration` instead.**
+Extra args to pass to `kubelet` during startup. E.g. to allow `kubelet` to start up even if there is swap is enabled on your server, set this to: `"--fail-swap-on=false"`. Or to specify the node-ip advertised by `kubelet`, set this to: `"--node-ip={{ ansible_host }}"`. **This option is deprecated. Please use `kubernetes_config_kubelet_configuration` instead.**
 
 ```yaml
 kubernetes_kubeadm_init_extra_opts: ""
 ```
 
-Extra args to pass to `kubeadm init` during K8s control plane initialization. E.g. to specify extra Subject Alternative Names for API server certificate, set this to: `"--apiserver-cert-extra-sans my-custom.host"`
+Extra args to pass to `kubeadm init` during K8s control plane initialization. E.g. to specify extra Subject Alternative Names for API server certificate, use this to: `"--apiserver-cert-extra-sans my-custom.host"`
 
 ```yaml
 kubernetes_join_command_extra_opts: ""
 ```
 
-Extra args to pass to the generated `kubeadm join` command during K8s node initialization. E.g. to ignore certain preflight errors like swap being enabled, set this to: `--ignore-preflight-errors=Swap`
+Extra args to pass to the generated `kubeadm join` command during K8s node initialization. E.g. to ignore certain preflight errors like swap being enabled, use this to: `--ignore-preflight-errors=Swap`
 
 ### Additional variables
 
@@ -112,7 +112,7 @@ Extra args to pass to the generated `kubeadm join` command during K8s node initi
 kubernetes_allow_pods_on_control_plane: true
 ```
 
-Whether to remove the taint that denies pods from being deployed to the Kubernetes control plane. If you have a single-node cluster, this should definitely be `True`. Otherwise, set to `False` if you want a dedicated Kubernetes control plane which doesn't run any other pods.
+Whether to remove the taint that denies pods from being deployed to the Kubernetes control plane. If you have a single-node cluster, this should definitely be `True`. Otherwise, set it to `False` if you want a dedicated Kubernetes control plane which doesn't run any other pods.
 
 ```yaml
 kubernetes_pod_network:
@@ -129,7 +129,7 @@ kubernetes_pod_network:
   # cidr: '192.168.0.0/16'
 ```
 
-This role currently supports `flannel` (default), `calico` or `weave` for cluster pod networking. Choose only one for your cluster; converting between them is not done automatically and could result in broken networking; if you need to switch from one to another, it should be done outside of this role.
+This role currently supports `flannel` (default), `calico` or `weave` for cluster pod networking. Choose only one for your cluster; converting between them is not done automatically and could result in broken networking; if you need to switch between them, it should be done outside of this role.
 
 ```yaml
 kubernetes_apiserver_advertise_address: ''`
@@ -213,7 +213,7 @@ Playbook:
     - geerlingguy.kubernetes
 ```
 
-Then, log into the Kubernetes control plane, and run `kubectl get nodes` as root, and you should see a list of all the servers.
+Then, log into the Kubernetes control plane, and run `kubectl get nodes` as root, and you should see a list of all of your servers.
 
 ## License
 

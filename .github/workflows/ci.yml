@@ -54,8 +54,6 @@ jobs:
           - distro: debian13
             playbook: converge.yml
 
-          - distro: debian12
-            playbook: calico.yml
           - distro: debian13
             playbook: calico.yml
 

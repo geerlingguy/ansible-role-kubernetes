@@ -24,10 +24,10 @@
     - net.bridge.bridge-nf-call-iptables
     - net.bridge.bridge-nf-call-ip6tables
   when: >
-    ( ansible_distribution != 'Debian'
-      or ansible_distribution_major_version | int < 10
+    ( ansible_facts.distribution != 'Debian'
+      or ansible_facts.distribution_major_version | int < 10
     )
-    and (ansible_distribution != 'Fedora' or ansible_distribution_major_version | int < 34)
+    and (ansible_facts.distribution != 'Fedora' or ansible_facts.distribution_major_version | int < 34)
     and not ansible_virtualization_type == "docker"
 
 - name: Permanently allow ipv4 rp_filter on host nic

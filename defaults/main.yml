@@ -11,11 +11,10 @@ kubernetes_packages:
 
 kubernetes_version: '1.37'
 kubernetes_version_rhel_package: '1.37'
-
+kubernetes_fedora_qualifier: '-150500.2.1'
 
 kubernetes_cni_version: '1.8'
 kubernetes_cni_version_fedora_package: "{{ kubernetes_cni_version }}.0{{ kubernetes_fedora_qualifier }}"
-kubernetes_fedora_qualifier: '-150500.2.1'
 kubernetes_version_fedora_package: "{{ kubernetes_version }}.2{{ kubernetes_fedora_qualifier }}"
 kubernetes_kube_port: 6443
 
